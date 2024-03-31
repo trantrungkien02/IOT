@@ -24,7 +24,7 @@ npm install
 - Hệ thống sẽ tự động tải xuống các thư viện cần thiết ở **package.json**
 
 Install thư viện cho Server
-- Cài đặt thư viện ở client bằng cách trỏ đến thư mục
+- Cài đặt thư viện ở server bằng cách trỏ đến thư mục
 ```
 cd Server
 ```
