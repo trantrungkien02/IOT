@@ -57,7 +57,7 @@ npm start
 - Client được chạy và giao diện website hiển thị
 
 Chạy Server
-- Chạy client bằng cách trỏ đến thư mục ```cd Server```
+- Chạy server bằng cách trỏ đến thư mục ```cd Server```
 - Sau khi đã ở Server thì thực hiện lệnh
 ```
 npm start
