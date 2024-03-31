@@ -28,7 +28,7 @@ Install thư viện cho Server
 ```
 cd Server
 ```
-- Sau khi đã ở Client thì thực hiện lệnh
+- Sau khi đã ở Server thì thực hiện lệnh
 ```
 npm install
 ```
