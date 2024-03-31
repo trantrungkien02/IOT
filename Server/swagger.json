@@ -1,0 +1,1071 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Swagger API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/"
+    }
+  ],
+  "components": {
+    "schemas": {
+      "DashBoard": {
+        "type": "object",
+        "properties": {
+          "temperature": {
+            "type": "number"
+          },
+          "humidity": {
+            "type": "number"
+          },
+          "light": {
+            "type": "number"
+          }
+        },
+        "example": {
+          "temperature": 25.5,
+          "humidity": 60.2,
+          "light": 80
+        }
+      },
+      "SensorData": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "primaryKey": true
+          },
+          "temperature": {
+            "type": "number"
+          },
+          "humidity": {
+            "type": "number"
+          },
+          "light": {
+            "type": "number"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "example": {
+          "id": 1,
+          "temperature": 25.5,
+          "humidity": 60.2,
+          "light": 80,
+          "createdAt": "2024-03-31T07:30:00Z"
+        }
+      },
+      "createSensorData": {
+        "type": "object",
+        "properties": {
+          "temperature": {
+            "type": "number"
+          },
+          "humidity": {
+            "type": "number"
+          },
+          "light": {
+            "type": "number"
+          }
+        },
+        "example": {
+          "temperature": 25.5,
+          "humidity": 60.2,
+          "light": 80
+        }
+      },
+      "ActionHistory": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "primaryKey": true
+          },
+          "deviceName": {
+            "type": "string"
+          },
+          "action": {
+            "type": "integer"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "example": {
+          "id": 1,
+          "deviceName": "Device123",
+          "action": 1,
+          "createdAt": "2024-03-31T12:00:00Z"
+        }
+      },
+      "createActionHistory": {
+        "type": "object",
+        "properties": {
+          "deviceName": {
+            "type": "string"
+          },
+          "action": {
+            "type": "integer"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "example": {
+          "deviceName": "Device123",
+          "action": 1,
+          "createdAt": "2024-03-31T12:00:00Z"
+        }
+      }
+    }
+  },
+  "paths": {
+    "/dashboard/all": {
+      "get": {
+        "tags": ["dashboard"],
+        "description": "Get data of the dashboard with pagination",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "description": "Page number",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "in": "query",
+            "name": "pageSize",
+            "description": "Number of datasensors per page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          {
+            "in": "query",
+            "name": "orderBy",
+            "description": "Order by",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["id_DESC", "temperature_ASC", "temperature_DESC", "humidity_ASC", "humidity_DESC", "light_ASC", "light_DESC"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get data successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "temperature": {
+                        "type": "number"
+                      },
+                      "humidity": {
+                        "type": "number"
+                      },
+                      "light": {
+                        "type": "number"
+                      }
+                    }
+                  },
+                  "example": [
+                    {
+                      "id": 1,
+                      "temperature": 25,
+                      "humidity": 60,
+                      "light": 80
+                    },
+                    {
+                      "id": 2,
+                      "temperature": 26,
+                      "humidity": 62,
+                      "light": 78
+                    },
+                    {
+                      "id": 3,
+                      "temperature": 27,
+                      "humidity": 63,
+                      "light": 75
+                    },
+                    {
+                      "id": 4,
+                      "temperature": 28,
+                      "humidity": 65,
+                      "light": 72
+                    },
+                    {
+                      "id": 5,
+                      "temperature": 29,
+                      "humidity": 67,
+                      "light": 70
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dashboard/search/{field}": {
+      "get": {
+        "tags": ["dashboard"],
+        "description": "Get DashBoard data based on Field",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "description": "Page number",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "in": "query",
+            "name": "pageSize",
+            "description": "Number of datasensors per page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          {
+            "name": "field",
+            "in": "query",
+            "description": "Field to retrieve (id, temperature, humidity, light)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["all", "id", "temperature", "humidity", "light"]
+            }
+          },
+          {
+            "name": "value",
+            "in": "query",
+            "description": "Value to search for the specified field",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "temperature": {
+                      "type": "number"
+                    },
+                    "humidity": {
+                      "type": "number"
+                    },
+                    "light": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/datasensor/all": {
+      "get": {
+        "tags": ["datasensor"],
+        "description": "Get data of the datasensor with pagination",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "description": "Page number",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "in": "query",
+            "name": "pageSize",
+            "description": "Number of datasensors per page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          {
+            "in": "query",
+            "name": "orderBy",
+            "description": "Order by",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["id_ASC", "id_DESC", "temperature_ASC", "temperature_DESC", "humidity_ASC", "humidity_DESC", "light_ASC", "light_DESC"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get data successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "temperature": {
+                        "type": "number"
+                      },
+                      "humidity": {
+                        "type": "number"
+                      },
+                      "light": {
+                        "type": "number"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      }
+                    }
+                  },
+                  "example": [
+                    {
+                      "id": 1,
+                      "temperature": 25,
+                      "humidity": 60,
+                      "light": 80,
+                      "createdAt": "2024-03-28T12:00:00Z"
+                    },
+                    {
+                      "id": 2,
+                      "temperature": 26,
+                      "humidity": 62,
+                      "light": 78,
+                      "createdAt": "2024-03-28T12:10:00Z"
+                    },
+                    {
+                      "id": 3,
+                      "temperature": 27,
+                      "humidity": 63,
+                      "light": 75,
+                      "createdAt": "2024-03-28T12:20:00Z"
+                    },
+                    {
+                      "id": 4,
+                      "temperature": 28,
+                      "humidity": 65,
+                      "light": 72,
+                      "createdAt": "2024-03-28T12:30:00Z"
+                    },
+                    {
+                      "id": 5,
+                      "temperature": 29,
+                      "humidity": 67,
+                      "light": 70,
+                      "createdAt": "2024-03-28T12:40:00Z"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/datasensor/search/{field}": {
+      "get": {
+        "tags": ["datasensor"],
+        "description": "Get DataSensor data based on the specified field",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "description": "Page number",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "in": "query",
+            "name": "pageSize",
+            "description": "Number of items per page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          {
+            "name": "field",
+            "in": "query",
+            "description": "Field to retrieve",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["all", "id", "temperature", "humidity", "light", "createdAt"]
+            }
+          },
+          {
+            "name": "value",
+            "in": "query",
+            "description": "Value to search for the specified field",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get data successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "temperature": {
+                        "type": "number"
+                      },
+                      "humidity": {
+                        "type": "number"
+                      },
+                      "light": {
+                        "type": "number"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      }
+                    }
+                  },
+                  "example": [
+                    {
+                      "id": 1,
+                      "temperature": 25,
+                      "humidity": 60,
+                      "light": 80,
+                      "createdAt": "2024-03-28T12:00:00Z"
+                    },
+                    {
+                      "id": 2,
+                      "temperature": 26,
+                      "humidity": 62,
+                      "light": 78,
+                      "createdAt": "2024-03-28T12:10:00Z"
+                    },
+                    {
+                      "id": 3,
+                      "temperature": 27,
+                      "humidity": 63,
+                      "light": 75,
+                      "createdAt": "2024-03-28T12:20:00Z"
+                    },
+                    {
+                      "id": 4,
+                      "temperature": 28,
+                      "humidity": 65,
+                      "light": 72,
+                      "createdAt": "2024-03-28T12:30:00Z"
+                    },
+                    {
+                      "id": 5,
+                      "temperature": 29,
+                      "humidity": 67,
+                      "light": 70,
+                      "createdAt": "2024-03-28T12:40:00Z"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/datasensor/create": {
+      "post": {
+        "tags": ["datasensor"],
+        "description": "Create new datasensor",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "temperature": {
+                    "type": "number"
+                  },
+                  "humidity": {
+                    "type": "number"
+                  },
+                  "light": {
+                    "type": "number"
+                  }
+                },
+                "required": ["temperature", "humidity", "light"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "temperature": {
+                      "type": "number"
+                    },
+                    "humidity": {
+                      "type": "number"
+                    },
+                    "light": {
+                      "type": "number"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/datasensor/update/{id}": {
+      "put": {
+        "tags": ["datasensor"],
+        "description": "Update datasensor by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The ID of the datasensor needs updating",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "temperature": {
+                    "type": "number"
+                  },
+                  "humidity": {
+                    "type": "number"
+                  },
+                  "light": {
+                    "type": "number"
+                  }
+                },
+                "required": ["temperature", "humidity", "light"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "temperature": {
+                      "type": "number"
+                    },
+                    "humidity": {
+                      "type": "number"
+                    },
+                    "light": {
+                      "type": "number"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/datasensor/delete/{id}": {
+      "delete": {
+        "tags": ["datasensor"],
+        "description": "Delete datasensor by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the datasensor to be deleted",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "404": {
+            "description": "Data sensor not found"
+          }
+        }
+      }
+    },
+    "/actionhistory/all": {
+      "get": {
+        "tags": ["actionhistory"],
+        "description": "Returns the entire action history with pagination and sorting",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "description": "Page number",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "in": "query",
+            "name": "pageSize",
+            "description": "Number of items per page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          {
+            "in": "query",
+            "name": "orderBy",
+            "description": "Order by ",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["id_DESC", "deviceName_ASC", "deviceName_DESC", "action_ASC", "action_DESC", "createdAt_ASC", "createdAt_DESC"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get data successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "deviceName": {
+                        "type": "string"
+                      },
+                      "action": {
+                        "type": "string"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      }
+                    }
+                  },
+                  "example": [
+                    {
+                      "id": 1,
+                      "deviceName": "Device1",
+                      "action": "on",
+                      "createdAt": "2024-03-28T12:00:00Z"
+                    },
+                    {
+                      "id": 2,
+                      "deviceName": "Device2",
+                      "action": "off",
+                      "createdAt": "2024-03-28T12:10:00Z"
+                    },
+                    {
+                      "id": 3,
+                      "deviceName": "Device3",
+                      "action": "on",
+                      "createdAt": "2024-03-28T12:20:00Z"
+                    },
+                    {
+                      "id": 4,
+                      "deviceName": "Device4",
+                      "action": "off",
+                      "createdAt": "2024-03-28T12:30:00Z"
+                    },
+                    {
+                      "id": 5,
+                      "deviceName": "Device5",
+                      "action": "on",
+                      "createdAt": "2024-03-28T12:40:00Z"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/actionhistory/search/{field}": {
+      "get": {
+        "tags": ["actionhistory"],
+        "description": "Get action history data based on the specified field",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "description": "Page number",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "in": "query",
+            "name": "pageSize",
+            "description": "Number of items per page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          {
+            "name": "field",
+            "in": "query",
+            "description": "Field to retrieve",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["all", "id", "deviceName", "action", "createdAt"]
+            }
+          },
+          {
+            "name": "value",
+            "in": "query",
+            "description": "Value to search for the specified field",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get data successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "deviceName": {
+                        "type": "string"
+                      },
+                      "action": {
+                        "type": "string"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      }
+                    }
+                  },
+                  "example": [
+                    {
+                      "id": 1,
+                      "deviceName": "Device1",
+                      "action": "on",
+                      "createdAt": "2024-03-28T12:00:00Z"
+                    },
+                    {
+                      "id": 2,
+                      "deviceName": "Device2",
+                      "action": "off",
+                      "createdAt": "2024-03-28T12:10:00Z"
+                    },
+                    {
+                      "id": 3,
+                      "deviceName": "Device3",
+                      "action": "on",
+                      "createdAt": "2024-03-28T12:20:00Z"
+                    },
+                    {
+                      "id": 4,
+                      "deviceName": "Device4",
+                      "action": "off",
+                      "createdAt": "2024-03-28T12:30:00Z"
+                    },
+                    {
+                      "id": 5,
+                      "deviceName": "Device5",
+                      "action": "on",
+                      "createdAt": "2024-03-28T12:40:00Z"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/actionhistory/create": {
+      "post": {
+        "tags": ["actionhistory"],
+        "description": "Create new action history",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "deviceName": {
+                    "type": "string"
+                  },
+                  "action": {
+                    "type": "string"
+                  }
+                },
+                "required": ["deviceName", "action"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "deviceName": {
+                      "type": "string"
+                    },
+                    "action": {
+                      "type": "string"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  },
+                  "example": [
+                    {
+                      "id": 1,
+                      "deviceName": "Device 1",
+                      "action": "on",
+                      "createdAt": "2024-03-28T12:00:00Z"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/actionhistory/update/{id}": {
+      "put": {
+        "tags": ["actionhistory"],
+        "description": "Update action history by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the activity history to update",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "deviceName": {
+                    "type": "string"
+                  },
+                  "action": {
+                    "type": "string"
+                  }
+                },
+                "required": ["deviceName", "action"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "404": {
+            "description": "Action history not found"
+          }
+        }
+      }
+    },
+    "/actionhistory/updatestatus/{id}": {
+      "patch": {
+        "tags": ["actionhistory"],
+        "description": "Update device status by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the device to update",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "action": {
+                    "type": "string"
+                  }
+                },
+                "required": ["action"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "404": {
+            "description": "Action history not found"
+          },
+          "400": {
+            "description": "Invalid action value"
+          }
+        }
+      }
+    },
+    "/actionhistory/delete/{id}": {
+      "delete": {
+        "tags": ["actionhistory"],
+        "description": "Delete action history by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the action history to delete",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "404": {
+            "description": "Action history not found"
+          }
+        }
+      }
+    }
+  },
+
+  "definitions": {}
+}
