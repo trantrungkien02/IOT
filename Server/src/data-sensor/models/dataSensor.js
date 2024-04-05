@@ -4,7 +4,11 @@ const { connect } = require('../../config/db/connectdb');
 async function dataSensor() {
   try {
     const url = await connect(); 
-    const sequelize = new Sequelize(url);
+    const sequelize = new Sequelize(url , { 
+      host: 'localhost',
+      dialect: 'mysql',
+      timezone: '+07:00',
+    });
     console.log(sequelize);
 
     const SensorData = sequelize.define(
@@ -29,7 +33,7 @@ async function dataSensor() {
         },
         createdAt: {
           type: DataTypes.DATE,
-          defaultValue: DataTypes.NOW,
+          defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
         },
       },
       {

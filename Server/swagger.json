@@ -128,7 +128,7 @@
     }
   },
   "paths": {
-    "/dashboard/all": {
+    "/dashboard": {
       "get": {
         "tags": ["dashboard"],
         "description": "Get data of the dashboard with pagination",
@@ -302,7 +302,7 @@
         }
       }
     },
-    "/datasensor/all": {
+    "/datasensor": {
       "get": {
         "tags": ["datasensor"],
         "description": "Get data of the datasensor with pagination",
@@ -336,6 +336,16 @@
             "schema": {
               "type": "string",
               "enum": ["id_ASC", "id_DESC", "temperature_ASC", "temperature_DESC", "humidity_ASC", "humidity_DESC", "light_ASC", "light_DESC"]
+            }
+          },
+          {
+            "in": "query",
+            "name": "filterBy",
+            "description": "Filter by ",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["temperature","humidity","light"]
             }
           }
         ],
@@ -579,7 +589,16 @@
                       "type": "string",
                       "format": "date-time"
                     }
-                  }
+                  },
+                  "example": [
+                    {
+                      "id": 1,
+                      "temperature": 25,
+                      "humidity": 60,
+                      "light": 80,
+                      "createdAt": "2024-03-28T12:00:00Z"
+                    }
+                  ]
                 }
               }
             }
@@ -681,7 +700,7 @@
         }
       }
     },
-    "/actionhistory/all": {
+    "/actionhistory": {
       "get": {
         "tags": ["actionhistory"],
         "description": "Returns the entire action history with pagination and sorting",
@@ -711,10 +730,20 @@
             "in": "query",
             "name": "orderBy",
             "description": "Order by ",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["id_ASC","id_DESC", "deviceName_ASC", "deviceName_DESC", "action_ASC", "action_DESC", "createdAt_ASC", "createdAt_DESC"]
+            }
+          },
+          {
+            "in": "query",
+            "name": "filterBy",
+            "description": "Filter by ",
             "required": false,
             "schema": {
               "type": "string",
-              "enum": ["id_DESC", "deviceName_ASC", "deviceName_DESC", "action_ASC", "action_DESC", "createdAt_ASC", "createdAt_DESC"]
+              "enum": ["deviceName","action","createdAt"]
             }
           }
         ],

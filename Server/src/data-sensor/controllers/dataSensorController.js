@@ -4,50 +4,104 @@ class dataSensorController {
   // [GET] /
   async getAll(req, res, next) {
     try {
-      const { page, pageSize, orderBy } = req.query;
-      const pageNumber = parseInt(page) || 1;
-      const sizePerPage = parseInt(pageSize) || 10;
-      let orderCriteria = [];
+        const { page, pageSize, orderBy, filterBy } = req.query;
+        const pageNumber = parseInt(page) || 1;
+        const sizePerPage = parseInt(pageSize) || 10;
+        let orderCriteria = [];
+        let attributes = ['id', 'temperature', 'humidity', 'light', 'createdAt'];
 
-      switch (orderBy) {
-        case 'id_ASC':
-          orderCriteria = [['id', 'ASC']];
-          break;
-        case 'id_DESC':
-          orderCriteria = [['id', 'DESC']];
-          break;
-        case 'temperature_ASC':
-          orderCriteria = [['temperature', 'ASC']];
-          break;
-        case 'temperature_DESC':
-          orderCriteria = [['temperature', 'DESC']];
-          break;
-        case 'humidity_ASC':
-          orderCriteria = [['humidity', 'ASC']];
-          break;
-        case 'humidity_DESC':
-          orderCriteria = [['humidity', 'DESC']];
-          break;
-        case 'light_ASC':
-          orderCriteria = [['light', 'ASC']];
-          break;
-        case 'light_DESC':
-          orderCriteria = [['light', 'DESC']];
-          break;
-      }
+        switch (orderBy) {
+            case 'id_ASC':
+                orderCriteria = [['id', 'ASC']];
+                break;
+            case 'id_DESC':
+                orderCriteria = [['id', 'DESC']];
+                break;
+            case 'temperature_ASC':
+                orderCriteria = [['temperature', 'ASC']];
+                break;
+            case 'temperature_DESC':
+                orderCriteria = [['temperature', 'DESC']];
+                break;
+            case 'humidity_ASC':
+                orderCriteria = [['humidity', 'ASC']];
+                break;
+            case 'humidity_DESC':
+                orderCriteria = [['humidity', 'DESC']];
+                break;
+            case 'light_ASC':
+                orderCriteria = [['light', 'ASC']];
+                break;
+            case 'light_DESC':
+                orderCriteria = [['light', 'DESC']];
+                break;
+            case 'dataCount_ASC':
+                orderCriteria = Sequelize.literal('data_count ASC');
+                break;
+            case 'dataCount_DESC':
+                orderCriteria = Sequelize.literal('data_count DESC');
+                break;
+        }
 
-      const SensorData = await dataSensor();
-      const sensorData = await SensorData.findAll({
-        limit: sizePerPage,
-        offset: (pageNumber - 1) * sizePerPage,
-        order: orderCriteria,
-      });
+        if (filterBy === 'temperature') {
+            attributes = attributes.filter(attr => attr !== 'humidity' && attr !== 'light');
+        } else if (filterBy === 'humidity') {
+            attributes = attributes.filter(attr => attr !== 'temperature' && attr !== 'light');
+        } else if (filterBy === 'light') {
+            attributes = attributes.filter(attr => attr !== 'temperature' && attr !== 'humidity');
+        }
 
-      res.send(sensorData);
+        const SensorData = await dataSensor();
+        const totalCount = await SensorData.count(); // Tính tổng số lượng dữ liệu trong toàn bộ database
+
+        const offset = (pageNumber - 1) * sizePerPage;
+        let sensorData = await SensorData.findAll({
+            attributes: attributes,
+            limit: sizePerPage,
+            offset: offset,
+        });
+
+        // Chuyển kết quả từ Sequelize thành mảng JavaScript
+        sensorData = sensorData.map(data => data.toJSON());
+
+        // Sắp xếp mảng dữ liệu
+        sensorData.sort((a, b) => {
+            // Thực hiện sắp xếp theo tiêu chí được chỉ định trong orderBy
+            // Đảm bảo rằng orderBy đã được xử lý ở trước để đảm bảo tính chính xác
+            if (orderBy === 'id_ASC') {
+                return a.id - b.id;
+            } else if (orderBy === 'id_DESC') {
+                return b.id - a.id;
+            } else if (orderBy === 'temperature_ASC') {
+                return a.temperature - b.temperature;
+            } else if (orderBy === 'temperature_DESC') {
+                return b.temperature - a.temperature;
+            } else if (orderBy === 'humidity_ASC') {
+                return a.humidity - b.humidity;
+            } else if (orderBy === 'humidity_DESC') {
+                return b.humidity - a.humidity;
+            } else if (orderBy === 'light_ASC') {
+                return a.light - b.light;
+            } else if (orderBy === 'light_DESC') {
+                return b.light - a.light;
+            } else {
+                // Nếu không có orderBy nào khớp, giữ nguyên thứ tự
+                return 0;
+            }
+        });
+
+        res.send({
+            totalCount: totalCount, // Tổng số lượng dữ liệu
+            data: sensorData, // Dữ liệu trả về theo trang và đã sắp xếp
+        });
     } catch (error) {
-      next(error);
+        next(error);
     }
-  }
+}
+
+
+
+
 
   async getByField(req, res, next) {
     try {

@@ -5,10 +5,9 @@ async function actionHistory() {
   try {
     const url = await connect(); 
     const sequelize = new Sequelize(url, {
-      dialectOptions: {
-        useUTC: false, 
-        timezone: '+07:00', 
-      },
+      host: 'localhost',
+      dialect: 'mysql',
+      timezone: '+07:00',
     });
 
     const ActionHistoryModel = sequelize.define(
@@ -29,7 +28,7 @@ async function actionHistory() {
         },
         createdAt: {
           type: DataTypes.DATE,
-          defaultValue: DataTypes.NOW,
+          defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
           allowNull: false,
         },
       },

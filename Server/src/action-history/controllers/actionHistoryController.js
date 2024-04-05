@@ -5,50 +5,96 @@ const { DateTime } = require('luxon');
 class actionHistoryController {
   async getAll(req, res, next) {
     try {
-      const { page, pageSize, orderBy } = req.query;
-      const pageNumber = parseInt(page) || 1;
-      const sizePerPage = parseInt(pageSize) || 10;
-      let orderCriteria = [];
+        const { page, pageSize, orderBy, filterBy } = req.query;
+        const pageNumber = parseInt(page) || 1;
+        const sizePerPage = parseInt(pageSize) || 10;
+        let orderCriteria = [];
+        let attributes = ['id', 'deviceName', 'action', 'createdAt'];
 
-      switch (orderBy) {
-        case 'id_DESC':
-          orderCriteria = [['id', 'DESC']];
-          break;
-        case 'deviceName_ASC':
-          orderCriteria = [['deviceName', 'ASC']];
-          break;
-        case 'deviceName_DESC':
-          orderCriteria = [['deviceName', 'DESC']];
-          break;
-        case 'action_ASC':
-          orderCriteria = [['action', 'ASC']];
-          break;
-        case 'action_DESC':
-          orderCriteria = [['action', 'DESC']];
-          break;
-        case 'createdAt_ASC':
-          orderCriteria = [['createdAt', 'ASC']];
-          break;
-        case 'createdAt_DESC':
-          orderCriteria = [['createdAt', 'DESC']];
-          break;
-        default:
-          orderCriteria = [['id', 'ASC']];
-          break;
-      }
+        switch (orderBy) {
+            case 'id_ASC':
+                orderCriteria = [['id', 'ASC']];
+                break;
+            case 'id_DESC':
+                orderCriteria = [['id', 'DESC']];
+                break;
+            case 'deviceName_ASC':
+                orderCriteria = [['deviceName', 'ASC']];
+                break;
+            case 'deviceName_DESC':
+                orderCriteria = [['deviceName', 'DESC']];
+                break;
+            case 'action_ASC':
+                orderCriteria = [['action', 'ASC']];
+                break;
+            case 'action_DESC':
+                orderCriteria = [['action', 'DESC']];
+                break;
+            case 'createdAt_ASC':
+                orderCriteria = [['createdAt', 'ASC']];
+                break;
+            case 'createdAt_DESC':
+                orderCriteria = [['createdAt', 'DESC']];
+                break;
+        }
 
-      const ActionHistory = await actionHistoryModel();
-      const actionHistory = await ActionHistory.findAll({
-        limit: sizePerPage,
-        offset: (pageNumber - 1) * sizePerPage,
-        order: orderCriteria,
-      });
+        if (filterBy === 'deviceName') {
+            attributes = attributes.filter(attr => attr !== 'action');
+        } else if (filterBy === 'action') {
+            attributes = attributes.filter(attr => attr !== 'deviceName');
+        } else if (filterBy === 'createdAt') {
+            attributes = attributes.filter(attr => attr !== 'deviceName' && attr !== 'action');
+        }
 
-      res.send(actionHistory);
+        const ActionHistory = await actionHistoryModel();
+        const totalCount = await ActionHistory.count(); // Tính tổng số lượng dữ liệu trong toàn bộ database
+
+        const offset = (pageNumber - 1) * sizePerPage;
+        let actionHistory = await ActionHistory.findAll({
+            attributes: attributes,
+            limit: sizePerPage,
+            offset: offset,
+        });
+
+        // Chuyển kết quả từ Sequelize thành mảng JavaScript
+        actionHistory = actionHistory.map(action => action.toJSON());
+
+        // Sắp xếp mảng dữ liệu
+        actionHistory.sort((a, b) => {
+            // Thực hiện sắp xếp theo tiêu chí được chỉ định trong orderBy
+            // Đảm bảo rằng orderBy đã được xử lý ở trước để đảm bảo tính chính xác
+            if (orderBy === 'id_ASC') {
+                return a.id - b.id;
+            } else if (orderBy === 'id_DESC') {
+                return b.id - a.id;
+            } else if (orderBy === 'deviceName_ASC') {
+                return a.deviceName.localeCompare(b.deviceName);
+            } else if (orderBy === 'deviceName_DESC') {
+                return b.deviceName.localeCompare(a.deviceName);
+            } else if (orderBy === 'action_ASC') {
+                return a.action.localeCompare(b.action);
+            } else if (orderBy === 'action_DESC') {
+                return b.action.localeCompare(a.action);
+            } else if (orderBy === 'createdAt_ASC') {
+                return new Date(a.createdAt) - new Date(b.createdAt);
+            } else if (orderBy === 'createdAt_DESC') {
+                return new Date(b.createdAt) - new Date(a.createdAt);
+            } else {
+                // Nếu không có orderBy nào khớp, giữ nguyên thứ tự
+                return 0;
+            }
+        });
+
+        res.send({
+            totalCount: totalCount, // Tổng số lượng dữ liệu
+            data: actionHistory, // Dữ liệu trả về theo trang và đã sắp xếp
+        });
     } catch (error) {
-      next(error);
+        next(error);
     }
-  }
+}
+
+  
 
   async getByField(req, res, next) {
     try {
