@@ -6,19 +6,32 @@ IOT Project là một dự án website tích hợp với hệ thống IOT. Hệ 
 - **Software**: Dự án sử dụng ReactJS để hiển thị dữ liệu bên client và NodeJS (ExpressJS) để xử lý dữ liệu ở server. Về hành động bật/tắt đèn (quạt) thì người dùng sẽ tương tác để thực hiện yêu cầu bật/tắt trên giao diện website(client) sau đó yêu cầu gọi đến server. Ở server thực hiện kết nối đến Mqtt broker để tác động lên phần cứng (bật/tắt ở phần cứng). Sau khi phần cứng thực thi hành động sẽ trả về trạng thái thiết bị cho server từ đó server lại gửi lại trạng thái bật/tắt cho client để hiển thị lên giao diện người dùng
 
 ## Cách cài đặt
-### Bước 1: Clone dự án từ github thông qua ![alt text](image.png) 
+### Bước 1: Clone dự án từ github thông qua 
+![alt text](image.png) 
 ```
 git clone https://github.com/trantrungkien02/IOT
 ```
 ### Bước 2: Mở dự án và cài đặt các thư viện cần thiết
 Install thư viện cho Client
-- Cài đặt thư viện ở client bằng cách trỏ đến thư mục ```cd Client```
-- Sau khi đã ở Client thì thực hiện lệnh ```npm install```
+- Cài đặt thư viện ở client bằng cách trỏ đến thư mục
+```
+cd Client
+```
+- Sau khi đã ở Client thì thực hiện lệnh
+```
+npm install
+```
 - Hệ thống sẽ tự động tải xuống các thư viện cần thiết ở **package.json**
 
 Install thư viện cho Server
-- Cài đặt thư viện ở client bằng cách trỏ đến thư mục ```cd Server```
-- Sau khi đã ở Client thì thực hiện lệnh ```npm install```
+- Cài đặt thư viện ở server bằng cách trỏ đến thư mục
+```
+cd Server
+```
+- Sau khi đã ở Server thì thực hiện lệnh
+```
+npm install
+```
 - Hệ thống sẽ tự động tải xuống các thư viện cần thiết ở **package.json**
 
 ### Bước 3: Sửa lại kết nối đến database(My SQL)
@@ -37,15 +50,22 @@ Chúng ta sẽ chạy Client và Server riêng lẻ
 
 Chạy Client
 - Chạy client bằng cách trỏ đến thư mục ```cd Client```
-- Sau khi đã ở Client thì thực hiện lệnh ```npm start```
+- Sau khi đã ở Client thì thực hiện lệnh
+```
+npm start
+```
 - Client được chạy và giao diện website hiển thị
 
 Chạy Server
-- Chạy client bằng cách trỏ đến thư mục ```cd Server```
-- Sau khi đã ở Server thì thực hiện lệnh ```npm start```
+- Chạy server bằng cách trỏ đến thư mục ```cd Server```
+- Sau khi đã ở Server thì thực hiện lệnh
+```
+npm start
+```
 - Server sẽ khởi chạy
 - Truy cập `http://localhost:3000/api/` để xem apidocs
 - Giao diện hiển thị
+
 ![SwaggerUI](image-1.png)
 
 ### Lưu ý
