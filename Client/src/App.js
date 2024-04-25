@@ -10,11 +10,11 @@
 // export default App;
 
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Infor from './components/Infor/Infor';
-import Board from './components/Board/Board';
+import Infor from './pages/Infor/Infor';
+import Board from './pages/Board/Boardcopy';
 import Navigation from './components/Navigation/Navigation';
-import DataSensors from './components/DataSensors/DataSensors';
-import ActionHistory from './components/ActionHistory/ActionHistory';
+import DataSensors from './pages/DataSensors/DataSensors';
+import ActionHistory from './pages/ActionHistory/ActionHistory';
 const App = () => {
   return (
     <Router>

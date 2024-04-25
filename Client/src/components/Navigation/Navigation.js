@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import classNames from 'classnames/bind';
 import styles from './Navigation.module.scss';
@@ -9,7 +9,11 @@ const Navigation = () => {
   const location = useLocation();
   const [activeTab, setActiveTab] = useState(location.pathname);
 
-  const handleTabClick = (path) => {
+  useEffect(() => {
+    setActiveTab(location.pathname);
+  }, [location.pathname]);
+
+  const handleTabClick = path => {
     setActiveTab(path);
   };
 
@@ -20,7 +24,7 @@ const Navigation = () => {
           DASHBOARD
         </Link>
       </div>
-      <div className={cx('Nav-child', { 'Nav-link-active': activeTab === '/datasensors' })}>
+      <div className={cx('Nav-child', { 'Nav-link-active': activeTab.includes('/datasensors') })}>
         <Link to="/datasensors" className={cx('Nav-link')} onClick={() => handleTabClick('/datasensors')}>
           DATA SENSORS
         </Link>

@@ -1,0 +1,70 @@
+/* DataSensors.module.scss */
+
+.base {
+  padding-top: 20px;
+}
+/* Styling for the sensor table */
+.sensor-table-div {
+  width: 80%;
+  margin: 10px auto;
+  background-color: #f4f8f9;
+  padding: 10px;
+  // border: 1px solid #ddd;
+  //   padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px; /* Bo góc */
+  overflow: hidden;
+  // border-collapse: collapse;
+}
+
+.sensor-table {
+  width: 100%;
+  // border-collapse: collapse;
+  // padding: 0 10px;
+}
+
+/* Styling for table headers (th) */
+th {
+  width: 20%;
+  color: #b1b9c0;
+  padding: 12px;
+  text-align: center;
+}
+.sensor-table tbody {
+  width: 100%;
+}
+/* Styling for table cells (td) */
+.sensor-table td {
+  width: 20%;
+  padding: 17.8px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+  font-weight: 600;
+  border-radius: 5px;
+}
+.sensor-table tbody tr:nth-child(odd) {
+  background-color: rgba(0, 0, 0, 0.03); /* Màu xám nhạt cho hàng lẻ */
+}
+/* Styling for table rows on hover */
+.sensor-table tbody tr:hover {
+  background-color: rgba(0, 0, 0, 0.06);
+}
+
+.active {
+  background-color: #555;
+  color: #fff;
+}
+.page {
+  max-width: 80%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  // position: fixed;
+  // bottom: 20px;
+  // left: 0;
+  // right: 0;
+}
+.icon-hover:hover {
+  cursor: pointer;
+}

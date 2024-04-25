@@ -2,7 +2,7 @@ import React from 'react';
 import { ReactTyped as Typed } from 'react-typed';
 import classNames from 'classnames/bind';
 import styles from './Infor.module.scss';
-import Navigation from '../Navigation/Navigation';
+import Navigation from '../../components/Navigation/Navigation';
 import inforimg from '../../images/myimg.jpg';
 import hacker from '../../images/hackerlo.jpg';
 import hagiang from '../../images/hagiang.jpg';
@@ -12,22 +12,32 @@ import project1 from '../../images/project1.jpg';
 import reactapp from '../../images/reactapp.jpg';
 import tmdt from '../../images/tmdt.jpg';
 import theband from '../../images/theband.jpg';
+// Import từ free-brands-svg-icons
+import {
+  faFacebookF,
+  faTiktok,
+  faInstagram,
+  faGithub,
+  faTwitter,
+  faHtml5,
+  faCss3Alt,
+  faReact,
+  faPython,
+  faJs,
+} from '@fortawesome/free-brands-svg-icons';
+
+// Import từ free-solid-svg-icons
+import { faUserSecret, faBook, faGlobeAmericas, faBullseye, faHome } from '@fortawesome/free-solid-svg-icons';
+
+// Import FontAwesomeIcon
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFacebookF } from '@fortawesome/free-brands-svg-icons';
-import { faTiktok } from '@fortawesome/free-brands-svg-icons';
-import { faInstagram } from '@fortawesome/free-brands-svg-icons';
-import { faGithub } from '@fortawesome/free-brands-svg-icons';
-import { faTwitter } from '@fortawesome/free-brands-svg-icons';
-import { faUserSecret } from '@fortawesome/free-solid-svg-icons';
-import { faBook } from '@fortawesome/free-solid-svg-icons';
-import { faGlobeAmericas } from '@fortawesome/free-solid-svg-icons';
-import { faBullseye } from '@fortawesome/free-solid-svg-icons';
-import { faHtml5 } from '@fortawesome/free-brands-svg-icons';
-import { faCss3Alt, faReact, faPython } from '@fortawesome/free-brands-svg-icons';
-import { faJs } from '@fortawesome/free-brands-svg-icons';
-import { faHome } from '@fortawesome/free-solid-svg-icons';
+
 const cx = classNames.bind(styles);
 function Infor() {
+  const handleLinkClick = event => {
+    event.preventDefault();
+    // Thêm các hành động bạn muốn thực hiện khi liên kết được nhấp vào ở đây
+  };
   return (
     <div>
       <div className={cx('base')}>
@@ -50,10 +60,7 @@ function Infor() {
                   />
                 </span>
                 <ul className={cx('infor-generalcontact-list')}>
-                  <a
-                    href="https://www.facebook.com/kien.trantrung.14473426"
-                    style={{ color: '#000', textDecoration: 'none' }}
-                  >
+                  <a href="https://www.facebook.com/kien.trantrung.14473426" style={{ color: '#000', textDecoration: 'none' }}>
                     <div className={cx('icon-wrap1')}>
                       <FontAwesomeIcon icon={faFacebookF} className={cx('fab', 'fa-facebook-f')} />
                     </div>
@@ -63,10 +70,7 @@ function Infor() {
                       <FontAwesomeIcon icon={faTiktok} className={cx('fab', 'fa-tiktok')} />
                     </div>
                   </a>
-                  <a
-                    href="https://www.instagram.com/trungkien141002/"
-                    style={{ color: '#000', textDecoration: 'none' }}
-                  >
+                  <a href="https://www.instagram.com/trungkien141002/" style={{ color: '#000', textDecoration: 'none' }}>
                     <div className={cx('icon-wrap3')}>
                       <FontAwesomeIcon icon={faInstagram} className={cx('fab', 'fa-instagram')} />
                     </div>
@@ -76,10 +80,7 @@ function Infor() {
                       <FontAwesomeIcon icon={faGithub} className={cx('fab', 'fa-github')} />
                     </div>
                   </a>
-                  <a
-                    href="https://www.facebook.com/kien.trantrung.14473426"
-                    style={{ color: '#000', textDecoration: 'none' }}
-                  >
+                  <a href="https://www.facebook.com/kien.trantrung.14473426" style={{ color: '#000', textDecoration: 'none' }}>
                     <div className={cx('icon-wrap5')}>
                       <FontAwesomeIcon icon={faTwitter} className={cx('fab', 'fa-twitter')} />
                     </div>
@@ -113,10 +114,7 @@ function Infor() {
           <div className={cx('container_category')} style={{ zIndex: 2, boxShadow: '0 6px 10px rgba(0,0,0, 0.2)' }}>
             <a href="#" style={{ textDecoration: 'none' }}>
               <div className={cx('container_category-menu')}>
-                <FontAwesomeIcon
-                  icon={faUserSecret}
-                  className={cx('fas', 'fa-user-secret', 'category-menu-icon-css')}
-                />
+                <FontAwesomeIcon icon={faUserSecret} className={cx('fas', 'fa-user-secret', 'category-menu-icon-css')} />
                 <p className={cx('category-menu-text-css')}>BẢN THÂN</p>
               </div>
             </a>
@@ -144,17 +142,13 @@ function Infor() {
           </div>
 
           <div className={cx('container_category-contents')} style={{ zIndex: 2 }}>
-            <div
-              id="banthan"
-              className={cx('container_category-content', 'flexing')}
-              style={{ boxShadow: '0 6px 10px rgba(0,0,0, 0.2)' }}
-            >
+            <div id="banthan" className={cx('container_category-content', 'flexing')} style={{ boxShadow: '0 6px 10px rgba(0,0,0, 0.2)' }}>
               <div className={cx('category-content-intromyself')}>
                 <h1 className={cx('introyourselfh1')}>Giới Thiệu</h1>
                 <p>
-                  Mình tên là Trần trung Kiên, năm nay mình 21 tuổi, mình sinh ra và lớn lên tại quê hương Nam Định,
-                  hiện tại mình đang sinh sống và học tập tại Hà Nội và mình đang theo học tại Học Viện Công nghệ Bưu
-                  Chính Viễn Thông, chuyên ngành của mình là Phát Triển ứng Dụng thuộc ngành Công Nghê Đa Phương Tiện.
+                  Mình tên là Trần trung Kiên, năm nay mình 21 tuổi, mình sinh ra và lớn lên tại quê hương Nam Định, hiện tại mình đang sinh sống và
+                  học tập tại Hà Nội và mình đang theo học tại Học Viện Công nghệ Bưu Chính Viễn Thông, chuyên ngành của mình là Phát Triển ứng Dụng
+                  thuộc ngành Công Nghê Đa Phương Tiện.
                 </p>
               </div>
               <div className={cx('category-content-mylike')}>
@@ -180,9 +174,8 @@ function Infor() {
                     <ul className={cx('mylikegwshowul')}>
                       <h3>Hà Giang</h3>
                       <p>
-                        Vi vu với những đường đèo hiểm trở số 1, chúng ta sẽ tham quan sông Nho Quế, cột cờ Lũng Cú, đèo
-                        mã Pí Lèng, cao nguyên đá Đồng Văn,...Còn chờ gì mà không xách balo lên và đi nào, chắc chắn sẽ
-                        mang lại cho bạn cảm giác tuyệt vời!
+                        Vi vu với những đường đèo hiểm trở số 1, chúng ta sẽ tham quan sông Nho Quế, cột cờ Lũng Cú, đèo mã Pí Lèng, cao nguyên đá
+                        Đồng Văn,...Còn chờ gì mà không xách balo lên và đi nào, chắc chắn sẽ mang lại cho bạn cảm giác tuyệt vời!
                       </p>
                     </ul>
                   </div>
@@ -206,19 +199,15 @@ function Infor() {
                     <ul className={cx('mylikegwshowul')}>
                       <h3>Hộ Tâm</h3>
                       <p>
-                        Bộ phim kể về chuyện tình yêu đầy trắc trở của cặp tình nhân huyền yêu, sau khi trải qua muôn và
-                        vạn thử thách thì cuối cùng họ cũng đã được ở bên cạnh nhau.
+                        Bộ phim kể về chuyện tình yêu đầy trắc trở của cặp tình nhân huyền yêu, sau khi trải qua muôn và vạn thử thách thì cuối cùng
+                        họ cũng đã được ở bên cạnh nhau.
                       </p>
                     </ul>
                   </div>
                 </div>
               </div>
             </div>
-            <div
-              id="hocvan"
-              className={cx('container_category-content', 'flexing')}
-              style={{ boxShadow: '0 6px 10px rgba(0,0,0, 0.2)' }}
-            >
+            <div id="hocvan" className={cx('container_category-content', 'flexing')} style={{ boxShadow: '0 6px 10px rgba(0,0,0, 0.2)' }}>
               <h1 className={cx('introyourselfh1')}>Học Vấn</h1>
 
               <div className={cx('mygamelike-content')}>
@@ -231,9 +220,8 @@ function Infor() {
                   <h4 className={cx('educationschoolbefore')}>Học Viện Công Nghệ Bưu Chính Viễn Thông</h4>
                   <span>Từ 2020 -- Hiện Tại</span>
                   <p>
-                    Mình trúng tuyển vào Học Viện với số điểm 26.05 và hiện tại mình đang là sinh viên năm thứ tư của
-                    Học Viện. Mình khá tự hào khi là sinh viên của Học Viện còn gpa của mình thì ngược lại, mình rất
-                    thất vọng về nó.
+                    Mình trúng tuyển vào Học Viện với số điểm 26.05 và hiện tại mình đang là sinh viên năm thứ tư của Học Viện. Mình khá tự hào khi là
+                    sinh viên của Học Viện còn gpa của mình thì ngược lại, mình rất thất vọng về nó.
                   </p>
                 </div>
 
@@ -241,10 +229,9 @@ function Infor() {
                   <h4>F8 - Lập Trình FullStack</h4>
                   <span>Từ 2022 -- Hiện Tại</span>
                   <p>
-                    Đầu năm 2022 mình đã biết đến F8 là một trang web rất chi là phù hợp cho những bạn có đam mê với
-                    ngành lập trình web. Ở đây có rất nhiều khóa học cực kì hay và tâm huyết do anh Sơn Đặng tạo ra và
-                    đa số là khóa học free. Nhưng nếu bạn bỏ tiền ra mua khóa học mất tiền thì tin mình đi bạn sẽ không
-                    bao giờ thất vọng đâu, kiến thức bạn thu được sẽ là rất nhiều so với số tiền bạn bỏ ra.
+                    Đầu năm 2022 mình đã biết đến F8 là một trang web rất chi là phù hợp cho những bạn có đam mê với ngành lập trình web. Ở đây có rất
+                    nhiều khóa học cực kì hay và tâm huyết do anh Sơn Đặng tạo ra và đa số là khóa học free. Nhưng nếu bạn bỏ tiền ra mua khóa học mất
+                    tiền thì tin mình đi bạn sẽ không bao giờ thất vọng đâu, kiến thức bạn thu được sẽ là rất nhiều so với số tiền bạn bỏ ra.
                   </p>
                 </div>
 
@@ -252,10 +239,9 @@ function Infor() {
                   <h4>Funix</h4>
                   <span>Từ 2023 -- Hiện Tại</span>
                   <p>
-                    Funix là một trung tâm dạy học với đa nội dung từ lập trình, tiếng anh, ..... Chúng ta sẽ cần mất
-                    học phí khi tham gia các khóa học nhưng tin mình lần nữa đi, ở đây có cực kì nhiều khóa học hay và
-                    đặc sắc do cả giảng viên Việt Nam và cũng có thể là giảng viên nước ngoài giảng dạy. Đây là một
-                    trung tâm uy tín nếu bạn đang phân vân không biết mình sẽ theo học ở đâu.
+                    Funix là một trung tâm dạy học với đa nội dung từ lập trình, tiếng anh, ..... Chúng ta sẽ cần mất học phí khi tham gia các khóa
+                    học nhưng tin mình lần nữa đi, ở đây có cực kì nhiều khóa học hay và đặc sắc do cả giảng viên Việt Nam và cũng có thể là giảng
+                    viên nước ngoài giảng dạy. Đây là một trung tâm uy tín nếu bạn đang phân vân không biết mình sẽ theo học ở đâu.
                   </p>
                 </div>
               </div>
@@ -269,9 +255,8 @@ function Infor() {
                   <h4 className={cx('educationschoolbefore')}>Lập Trình Web</h4>
                   <span>Từ 2021 -- Hiện Tại</span>
                   <p>
-                    Sau những giờ học ở trường và những kiến thức mình tìm hiểu được thì hiện tại thi mình đã nắm được
-                    sơ sơ phần html,css và javascript. Ngoài ra mình cũng được học thêm một số ngôn ngữ lập trình khác
-                    như là C,C++,Python,Java nhưng mà chỉ ở mức độ cơ bản.
+                    Sau những giờ học ở trường và những kiến thức mình tìm hiểu được thì hiện tại thi mình đã nắm được sơ sơ phần html,css và
+                    javascript. Ngoài ra mình cũng được học thêm một số ngôn ngữ lập trình khác như là C,C++,Python,Java nhưng mà chỉ ở mức độ cơ bản.
                   </p>
                 </div>
 
@@ -279,8 +264,8 @@ function Infor() {
                   <h4>Chạy tiệc parttime</h4>
                   <span>Từ 2022 -- Hiện Tại</span>
                   <p>
-                    Với công việc làm parttime này cho mình rất nhiều trải nghiệm thú vị cùng một khoản thu nhập tương
-                    đối để có thể duy trì cuộc sống sinh hoạt và học tập.
+                    Với công việc làm parttime này cho mình rất nhiều trải nghiệm thú vị cùng một khoản thu nhập tương đối để có thể duy trì cuộc sống
+                    sinh hoạt và học tập.
                   </p>
                 </div>
 
@@ -288,8 +273,8 @@ function Infor() {
                   <h4>Nghiên cứu khoa học</h4>
                   <span>Từ 2022 -- 2023</span>
                   <p>
-                    Với các đề tài nghiên cứu khoa học mình đã học hỏi được rất nhiều kiến thức mới từ các người bạn
-                    đồng hành cùng những kinh nghiệm để có thể thực hiện được một đề tài nghiên cứu khoa học nào đó.
+                    Với các đề tài nghiên cứu khoa học mình đã học hỏi được rất nhiều kiến thức mới từ các người bạn đồng hành cùng những kinh nghiệm
+                    để có thể thực hiện được một đề tài nghiên cứu khoa học nào đó.
                   </p>
                 </div>
               </div>
@@ -307,11 +292,7 @@ function Infor() {
                   <div className={cx('container1')} id="skills">
                     <div className={cx('technical-bars')}>
                       <div className={cx('bar')}>
-                        <FontAwesomeIcon
-                          icon={faHtml5}
-                          className={cx('fab', 'fa-html5')}
-                          style={{ color: 'orangered' }}
-                        />
+                        <FontAwesomeIcon icon={faHtml5} className={cx('fab', 'fa-html5')} style={{ color: 'orangered' }} />
                         <div className={cx('info')}>
                           <span>HTML</span>
                         </div>
@@ -320,11 +301,7 @@ function Infor() {
                         </div>
                       </div>
                       <div className={cx('bar')}>
-                        <FontAwesomeIcon
-                          icon={faCss3Alt}
-                          className={cx('fab', 'fa-css3-alt')}
-                          style={{ color: '#147bbc' }}
-                        />
+                        <FontAwesomeIcon icon={faCss3Alt} className={cx('fab', 'fa-css3-alt')} style={{ color: '#147bbc' }} />
                         <div className={cx('info')}>
                           <span>CSS</span>
                         </div>
@@ -333,11 +310,7 @@ function Infor() {
                         </div>
                       </div>
                       <div className={cx('bar')}>
-                        <FontAwesomeIcon
-                          icon={faJs}
-                          className={cx('fab', 'fa-square-js')}
-                          style={{ color: '#b0bc1e' }}
-                        />
+                        <FontAwesomeIcon icon={faJs} className={cx('fab', 'fa-square-js')} style={{ color: '#b0bc1e' }} />
                         <div className={cx('info')}>
                           <span>Javascript</span>
                         </div>
@@ -346,11 +319,7 @@ function Infor() {
                         </div>
                       </div>
                       <div className={cx('bar')}>
-                        <FontAwesomeIcon
-                          icon={faReact}
-                          className={cx('fab', 'fa-react')}
-                          style={{ color: '#69bcbc' }}
-                        />
+                        <FontAwesomeIcon icon={faReact} className={cx('fab', 'fa-react')} style={{ color: '#69bcbc' }} />
                         <div className={cx('info')}>
                           <span>React</span>
                         </div>
@@ -359,11 +328,7 @@ function Infor() {
                         </div>
                       </div>
                       <div className={cx('bar')}>
-                        <FontAwesomeIcon
-                          icon={faPython}
-                          className={cx('fab', 'fa-python')}
-                          style={{ color: '#c32ec9' }}
-                        />
+                        <FontAwesomeIcon icon={faPython} className={cx('fab', 'fa-python')} style={{ color: '#c32ec9' }} />
                         <div className={cx('info')}>
                           <span>Python</span>
                         </div>
@@ -419,11 +384,7 @@ function Infor() {
                 </div>
               </div>
             </div>
-            <div
-              id="thanhtuu"
-              className={cx('container_category-content', 'flexing')}
-              style={{ boxShadow: '0 6px 10px rgba(0,0,0, 0.2)' }}
-            >
+            <div id="thanhtuu" className={cx('container_category-content', 'flexing')} style={{ boxShadow: '0 6px 10px rgba(0,0,0, 0.2)' }}>
               <h1 className={cx('introyourselfh2')}>Thành Tựu Nho Nhỏ</h1>
 
               <div className={cx('projected')}>
@@ -448,11 +409,7 @@ function Infor() {
 
               <p className={cx('pbottom')}>--------------------------------------------------</p>
             </div>
-            <div
-              id="muctieu"
-              className={cx('container_category-content', 'flexing')}
-              style={{ boxShadow: '0 6px 10px rgba(0,0,0, 0.2)' }}
-            >
+            <div id="muctieu" className={cx('container_category-content', 'flexing')} style={{ boxShadow: '0 6px 10px rgba(0,0,0, 0.2)' }}>
               <h1 className={cx('introyourselfh1')}>Mục Tiêu</h1>
 
               <div className={cx('mygamelike-content')}>
@@ -465,8 +422,8 @@ function Infor() {
                   <h4 className={cx('educationschoolbefore')}>Ra Trường đúng hạn</h4>
                   <span>Từ Hiện Tại -- 2025</span>
                   <p>
-                    Mình đang chuẩn bị học tiếng anh để lấy chứng chỉ ra trường cùng với đó mình sẽ cố gắng qua hết các
-                    môn để được ra trường đúng so với dự kiến.
+                    Mình đang chuẩn bị học tiếng anh để lấy chứng chỉ ra trường cùng với đó mình sẽ cố gắng qua hết các môn để được ra trường đúng so
+                    với dự kiến.
                   </p>
                 </div>
 
@@ -474,8 +431,8 @@ function Infor() {
                   <h4>Nắm chắc các ngôn ngữ lập trình web cơ bản</h4>
                   <span>Từ Hiện Tại -- Tương Lai</span>
                   <p>
-                    Hiện tại mình đang dồn toàn lực để cải thiện nhanh nhất các kiến thức cơ bản nhất như thành thạo
-                    html, css, js, reactjs,....Mục tiêu là học những kiến thức cần và đủ để có thể đi làm được.
+                    Hiện tại mình đang dồn toàn lực để cải thiện nhanh nhất các kiến thức cơ bản nhất như thành thạo html, css, js, reactjs,....Mục
+                    tiêu là học những kiến thức cần và đủ để có thể đi làm được.
                   </p>
                 </div>
 
@@ -483,8 +440,8 @@ function Infor() {
                   <h4>Biết 1-2 ngoại ngữ</h4>
                   <span>Từ Hiện Tại -- Tương Lai</span>
                   <p>
-                    Ngoài việc học tiếng anh để có chứng chỉ ra trường thì mình cũng có đam mê với tiếng Nhật. Mình sẽ
-                    cố gắng học song song để khả năng ngoại ngữ của mình đa năng hơn.
+                    Ngoài việc học tiếng anh để có chứng chỉ ra trường thì mình cũng có đam mê với tiếng Nhật. Mình sẽ cố gắng học song song để khả
+                    năng ngoại ngữ của mình đa năng hơn.
                   </p>
                 </div>
               </div>
@@ -499,8 +456,8 @@ function Infor() {
                   <h4 className={cx('educationschoolbefore')}>Mục tiêu việc làm ngắn hạn</h4>
                   <span>Từ Hiện Tại -- 2024</span>
                   <p>
-                    Mình mong muốn phấn đấu để được đi thực tập ở một số nơi để làm quen với môi trường làm việc của
-                    ngành cùng với đó tìm hiểu thêm các công nghệ mà thị trường đang cần.
+                    Mình mong muốn phấn đấu để được đi thực tập ở một số nơi để làm quen với môi trường làm việc của ngành cùng với đó tìm hiểu thêm
+                    các công nghệ mà thị trường đang cần.
                   </p>
                 </div>
 
@@ -508,20 +465,16 @@ function Infor() {
                   <h4>Mục tiêu việc làm dài hạn</h4>
                   <span>Từ Hiện Tại -- Tương Lai</span>
                   <p>
-                    Mục tiêu dài hạn của mình là có một công việc dev ổn định và có thu nhập từ trung bình đến cao để có
-                    thể cảm nhận cuộc sống một cách tốt nhất. Cùng với đó mình mong muốn bản thân càng hoàn thiện về mặt
-                    kiến thức,....để có thể trở thành phiên bản tốt nhất của bản thân.
+                    Mục tiêu dài hạn của mình là có một công việc dev ổn định và có thu nhập từ trung bình đến cao để có thể cảm nhận cuộc sống một
+                    cách tốt nhất. Cùng với đó mình mong muốn bản thân càng hoàn thiện về mặt kiến thức,....để có thể trở thành phiên bản tốt nhất của
+                    bản thân.
                   </p>
                 </div>
 
                 <p className={cx('pbottom')}>--------------------------------------------------</p>
               </div>
             </div>
-            <div
-              id="lienhe"
-              className={cx('container_category-content', 'flexing')}
-              style={{ boxShadow: '0 6px 10px rgba(0,0,0, 0.2)' }}
-            >
+            <div id="lienhe" className={cx('container_category-content', 'flexing')} style={{ boxShadow: '0 6px 10px rgba(0,0,0, 0.2)' }}>
               <h1 className={cx('introyourselfh1')}>Liên Hệ</h1>
 
               <div className={cx('content-section')}>
@@ -548,36 +501,15 @@ function Infor() {
                     <form action="">
                       <div className={cx('row')}>
                         <div className={cx('col', 'col-half', 's-col-full')}>
-                          <input
-                            type="text"
-                            name=""
-                            placeholder="Họ Và Tên"
-                            required
-                            id=""
-                            className={cx('form-control')}
-                          />
+                          <input type="text" name="" placeholder="Họ Và Tên" required id="" className={cx('form-control')} />
                         </div>
                         <div className={cx('col', 'col-half', 's-col-full', 's-mt-8')}>
-                          <input
-                            type="email"
-                            name=""
-                            placeholder="Email"
-                            required
-                            id=""
-                            className={cx('form-control')}
-                          />
+                          <input type="email" name="" placeholder="Email" required id="" className={cx('form-control')} />
                         </div>
                       </div>
                       <div className={cx('row', 'mt-8')}>
                         <div className={cx('col', 'col-full')}>
-                          <input
-                            type="text"
-                            name=""
-                            placeholder="Tin Nhắn"
-                            required
-                            id=""
-                            className={cx('form-control')}
-                          />
+                          <input type="text" name="" placeholder="Tin Nhắn" required id="" className={cx('form-control')} />
                         </div>
                       </div>
                       <input className={cx('contact-submit-btn')} type="submit" value="GỬI" />

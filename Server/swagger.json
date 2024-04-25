@@ -6,7 +6,7 @@
   },
   "servers": [
     {
-      "url": "http://localhost:3000/"
+      "url": "http://localhost:3001/"
     }
   ],
   "components": {
@@ -335,7 +335,18 @@
             "required": true,
             "schema": {
               "type": "string",
-              "enum": ["id_ASC", "id_DESC", "temperature_ASC", "temperature_DESC", "humidity_ASC", "humidity_DESC", "light_ASC", "light_DESC"]
+              "enum": [
+                "id_ASC",
+                "id_DESC",
+                "temperature_ASC",
+                "temperature_DESC",
+                "humidity_ASC",
+                "humidity_DESC",
+                "light_ASC",
+                "light_DESC",
+                "createdAt_ASC",
+                "createdAt_DESC"
+              ]
             }
           },
           {
@@ -345,7 +356,7 @@
             "required": false,
             "schema": {
               "type": "string",
-              "enum": ["temperature","humidity","light"]
+              "enum": ["temperature", "humidity", "light"]
             }
           }
         ],
@@ -733,7 +744,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "enum": ["id_ASC","id_DESC", "deviceName_ASC", "deviceName_DESC", "action_ASC", "action_DESC", "createdAt_ASC", "createdAt_DESC"]
+              "enum": ["id_ASC", "id_DESC", "deviceName_ASC", "deviceName_DESC", "action_ASC", "action_DESC", "createdAt_ASC", "createdAt_DESC"]
             }
           },
           {
@@ -743,7 +754,7 @@
             "required": false,
             "schema": {
               "type": "string",
-              "enum": ["deviceName","action","createdAt"]
+              "enum": ["deviceName", "action", "createdAt"]
             }
           }
         ],

@@ -8,7 +8,7 @@ import lighton from '../../images/ont.png';
 import humidityicon from '../../images/humidity.png';
 import temperatureicon from '../../images/tem.png';
 import sunicon from '../../images/sun.png';
-import Navigation from '../Navigation/Navigation';
+import Navigation from '../../components/Navigation/Navigation';
 
 const cx = classNames.bind(styles);
 
@@ -26,28 +26,28 @@ function Board() {
   //   { name: 'Tháng 6', temperature: 32, humidity: 55, light: 280 },
   // ];
 
-  useEffect(() => {
-    // Hàm để tạo dữ liệu ngẫu nhiên
-    const generateRandomData = () => {
-      return Array.from({ length: 5 }, (_, index) => ({
-        name: `Item ${index + 1}`,
-        temperature: getRandomValue(0, 45),
-        humidity: getRandomValue(60, 90),
-        light: getRandomValue(0, 110),
-      }));
-    };
+  // useEffect(() => {
+  //   // Hàm để tạo dữ liệu ngẫu nhiên
+  //   const generateRandomData = () => {
+  //     return Array.from({ length: 5 }, (_, index) => ({
+  //       name: `Item ${index + 1}`,
+  //       temperature: getRandomValue(0, 45),
+  //       humidity: getRandomValue(60, 90),
+  //       light: getRandomValue(0, 110),
+  //     }));
+  //   };
 
-    // Cập nhật dữ liệu ban đầu
-    setData1(generateRandomData());
+  //   // Cập nhật dữ liệu ban đầu
+  //   setData1(generateRandomData());
 
-    // Thiết lập interval để cập nhật dữ liệu mỗi giây
-    const intervalId = setInterval(() => {
-      setData1(generateRandomData());
-    }, 3000);
+  //   // Thiết lập interval để cập nhật dữ liệu mỗi giây
+  //   const intervalId = setInterval(() => {
+  //     setData1(generateRandomData());
+  //   }, 3000);
 
-    // Cleanup interval khi component bị unmounted
-    return () => clearInterval(intervalId);
-  }, []);
+  //   // Cleanup interval khi component bị unmounted
+  //   return () => clearInterval(intervalId);
+  // }, []);
 
   const [temperature, setTemperature] = useState(0);
   const [humidity, setHumidity] = useState(0);
@@ -57,21 +57,47 @@ function Board() {
   const [isChecked1, setIsChecked1] = useState(false);
   const [isLightOn, setIsLightOn] = useState(false);
   const [data1, setData1] = useState([]);
+  const boardElement = document.querySelector(`.${cx('board')}`);
+  const temperatureElement = document.querySelector(`.${cx('temperature')}`);
+  const lightElement = document.querySelector(`.${cx('sunny')}`);
+  const humidityElement = document.querySelector(`.${cx('humidity')}`);
+  const chartElement = document.querySelector(`.${cx('chart')}`);
+  const fanElement = document.querySelector(`.${cx('fan')}`);
+  const lampElement = document.querySelector(`.${cx('lamp')}`);
+  console.log(temperatureElement);
+  console.log(humidityElement);
+  console.log(lightElement);
   // const [hideBackground, setHideBackground] = useState(false);
   const handleCheckboxFan = () => {
-    setIsSpinning((prevSpinning) => !prevSpinning);
-    setIsChecked((prevChecked) => !prevChecked);
+    setIsSpinning(prevSpinning => !prevSpinning);
+    setIsChecked(prevChecked => !prevChecked);
   };
   const handleCheckboxLight = () => {
-    setIsLightOn((prevLightOn) => !prevLightOn);
-    setIsChecked1((prevChecked1) => !prevChecked1);
+    setIsLightOn(prevLightOn => !prevLightOn);
+    setIsChecked1(prevChecked1 => !prevChecked1);
   };
 
+  const [datasensor, setDataSenSor] = useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3001/dashboard?page=1&pageSize=1&orderBy=id_DESC`);
+        setDataSenSor(response.data);
+        console.log(response.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+    // console.log(itemsPerPage, orderBy, columnNames);
+    fetchData();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [datasensor]);
   useEffect(() => {
     // Cập nhật giá trị ngẫu nhiên khi component được render lần đầu tiên
-    setTemperature(getRandomValue(0, 45));
-    setHumidity(getRandomValue(60, 90));
-    setLight(getRandomValue(0, 110));
+    // setTemperature(getRandomValue(0, 45));
+    // setHumidity(getRandomValue(60, 90));
+    // setLight(getRandomValue(0, 110));
 
     // Thiết lập interval để cập nhật giá trị mỗi 5 giây
     const intervalId = setInterval(() => {
@@ -85,16 +111,6 @@ function Board() {
   }, []);
 
   useEffect(() => {
-    const boardElement = document.querySelector(`.${cx('board')}`);
-    const temperatureElement = document.querySelector(`.${cx('temperature')}`);
-    const lightElement = document.querySelector(`.${cx('sunny')}`);
-    const humidityElement = document.querySelector(`.${cx('humidity')}`);
-    const chartElement = document.querySelector(`.${cx('chart')}`);
-    const fanElement = document.querySelector(`.${cx('fan')}`);
-    const lampElement = document.querySelector(`.${cx('lamp')}`);
-    console.log(temperatureElement);
-    console.log(humidityElement);
-    console.log(lightElement);
     const checkTemperatureAlarm = () => {
       if (temperature > 40) {
         boardElement.classList.add(cx('temperature-alarm'));
@@ -192,12 +208,7 @@ function Board() {
           </div>
           <div className={cx('improve')}>
             <div className={cx('fan', 'humidity')}>
-              <img
-                src={fan}
-                alt=""
-                className={isSpinning ? cx('spin') : ''}
-                onClick={() => setIsSpinning(!isSpinning)}
-              />
+              <img src={fan} alt="" className={isSpinning ? cx('spin') : ''} onClick={() => setIsSpinning(!isSpinning)} />
               <label className={cx('switch')} style={{ marginTop: '35px' }}>
                 <span className={cx('off-label', { 'bold-text': !isSpinning })}>OFF</span>
                 <input type="checkbox" checked={isChecked} onChange={handleCheckboxFan} />

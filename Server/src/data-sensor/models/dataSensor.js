@@ -3,13 +3,13 @@ const { connect } = require('../../config/db/connectdb');
 
 async function dataSensor() {
   try {
-    const url = await connect(); 
-    const sequelize = new Sequelize(url , { 
+    const url = await connect();
+    const sequelize = new Sequelize(url, {
       host: 'localhost',
       dialect: 'mysql',
       timezone: '+07:00',
     });
-    console.log(sequelize);
+    // console.log(sequelize);
 
     const SensorData = sequelize.define(
       'data_sensors',
@@ -37,11 +37,11 @@ async function dataSensor() {
         },
       },
       {
-        timestamps: false, 
+        timestamps: false,
       },
     );
 
-    console.log(SensorData);
+    // console.log(SensorData);
     return SensorData;
   } catch (error) {
     console.error('Loi:', error);

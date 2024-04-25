@@ -1,13 +1,13 @@
 const path = require('path');
 const express = require('express');
 const methodOverride = require('method-override');
-
 const route = require('./routes');
 const { connect } = require('./config/db/connectdb');
 
-const port = 3000;
+const port = 3001;
 const app = express();
-
+var cors = require('cors');
+app.use(cors());
 // Connect to DB
 connect();
 // Join path
