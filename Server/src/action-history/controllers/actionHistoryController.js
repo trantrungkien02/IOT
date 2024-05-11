@@ -1,6 +1,7 @@
 const actionHistoryModel = require('../models/actionHistory');
 const Sequelize = require('sequelize');
 const moment = require('moment-timezone');
+const mqtt = require('mqtt');
 const { DateTime } = require('luxon');
 
 function convertDbTimeToAppTime(dbTime) {
@@ -104,11 +105,11 @@ class actionHistoryController {
 
   async getByField(req, res, next) {
     try {
-      const { field, value, page, pageSize } = req.query;
+      const { field, value, page, pageSize, orderBy } = req.query;
 
+      // Điều kiện tìm kiếm dựa trên field và value
       let whereCondition = {};
-
-      if (field != 'all' && value) {
+      if (field !== 'all' && value) {
         const validFields = ['id', 'deviceName', 'action', 'createdAt'];
         if (!validFields.includes(field)) {
           return res.status(400).send(`Field '${field}' is not valid.`);
@@ -129,34 +130,112 @@ class actionHistoryController {
       const offset = page ? (parseInt(page) - 1) * limit : 0;
 
       const ActionHistory = await actionHistoryModel();
+
+      // Lấy dữ liệu theo điều kiện phân trang
       let actionHistoryData = await ActionHistory.findAll({
         where: whereCondition,
         limit: limit,
         offset: offset,
       });
+
+      if (actionHistoryData.length === 0) {
+        return res.status(404).send(`No data found for the provided field and value.`);
+      }
+
+      // Chuyển đổi sang định dạng JSON và chuyển đổi thời gian
       actionHistoryData = actionHistoryData.map(data => ({
         ...data.toJSON(),
         createdAt: convertDbTimeToAppTime(data.createdAt).toISO(), // Chuyển đổi thời gian của createdAt
       }));
-      res.send(actionHistoryData);
+
+      // Sắp xếp trong phạm vi trang hiện tại
+      actionHistoryData.sort((a, b) => {
+        const createdAtA = DateTime.fromISO(a.createdAt);
+        const createdAtB = DateTime.fromISO(b.createdAt);
+
+        switch (orderBy) {
+          case 'id_ASC':
+            return a.id - b.id;
+          case 'id_DESC':
+            return b.id - a.id;
+          case 'deviceName_ASC':
+            return a.deviceName.localeCompare(b.deviceName);
+          case 'deviceName_DESC':
+            return b.deviceName.localeCompare(a.deviceName);
+          case 'action_ASC':
+            return a.action - b.action;
+          case 'action_DESC':
+            return b.action - a.action;
+          case 'createdAt_ASC':
+            return createdAtA - createdAtB;
+          case 'createdAt_DESC':
+            return createdAtB - createdAtA;
+          default:
+            return 0;
+        }
+      });
+
+      // Đếm tổng số lượng dữ liệu phù hợp với điều kiện tìm kiếm
+      const totalCount = await ActionHistory.count({
+        where: whereCondition,
+      });
+
+      res.send({
+        totalCount, // Tổng số lượng dữ liệu phù hợp với điều kiện tìm kiếm
+        data: actionHistoryData, // Dữ liệu trả về theo trang và đã sắp xếp
+      });
     } catch (error) {
-      next(error);
+      next(error); // Xử lý lỗi nếu có
     }
   }
 
   async create(req, res, next) {
     try {
       const { deviceName, action } = req.body;
-      const currentTime = DateTime.now();
 
-      console.log(currentTime.toISO());
+      // Tạo ActionHistory mới
       const ActionHistory = await actionHistoryModel();
       const newActionHistory = await ActionHistory.create({
         deviceName,
         action,
       });
 
-      res.status(201).json(newActionHistory);
+      // Xuất bản tới MQTT
+      const topic = `device/led`; // Chủ đề MQTT
+      const message = action; // Nội dung tin nhắn là hành động
+
+      client.publish(topic, message, publishError => {
+        if (publishError) {
+          console.error('Error publishing to MQTT:', publishError);
+          res.status(500).json({ error: 'Failed to publish to MQTT' });
+        } else {
+          console.log(`Published to MQTT topic ${topic}: ${message}`);
+
+          // Đăng ký chủ đề 'device/led/status' để lắng nghe phản hồi
+          client.subscribe('device/led/status', subscribeError => {
+            if (subscribeError) {
+              console.error('Error subscribing to MQTT:', subscribeError);
+              res.status(500).json({ error: 'Failed to subscribe to MQTT' });
+            } else {
+              console.log('Subscribed to MQTT topic device/led/status');
+
+              // Lắng nghe tin nhắn từ 'device/led/status'
+              client.once('message', (receivedTopic, receivedMessage) => {
+                if (receivedTopic === 'device/led/status') {
+                  const receivedText = receivedMessage.toString();
+                  console.log(`Received MQTT message from ${receivedTopic}:`, receivedText);
+
+                  // Gửi phản hồi HTTP với nội dung từ MQTT
+                  res.status(200).json({
+                    actionHistory: newActionHistory,
+                    mqttMessage: receivedText,
+                  });
+                }
+              });
+            }
+          });
+        }
+      });
     } catch (error) {
       next(error);
     }
@@ -232,5 +311,29 @@ class actionHistoryController {
     }
   }
 }
+const mqttServer = 'mqtt://192.168.0.107'; // Địa chỉ của MQTT broker
+const mqttOptions = {
+  port: 1993,
+  username: 'kienok', // Tên người dùng MQTT
+  password: 'kienok', // Mật khẩu MQTT
+};
+const client = mqtt.connect(mqttServer, mqttOptions);
 
+client.on('connect', () => {
+  console.log('Connected to MQTT broker');
+  client.subscribe('datasensor'); // Đăng ký subscribe vào chủ đề 'datasensor'
+});
+client.on('message', (topic, message) => {
+  console.log('Received message from topic:', topic);
+  console.log('Message:', message.toString());
+  // Xử lý dữ liệu nhận được từ MQTT
+});
+
+client.on('error', error => {
+  console.error('MQTT error:', error);
+});
+
+client.on('close', () => {
+  console.log('Disconnected from MQTT broker');
+});
 module.exports = new actionHistoryController();

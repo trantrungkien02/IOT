@@ -10,9 +10,9 @@
 
 DHT_Unified dht(DHTPIN, DHTTYPE);
 
-const char *ssid = "Ogie";
-const char *password = "06042002";
-const char *mqtt_server = "192.168.55.13";
+const char *ssid = "Trần Quyết";
+const char *password = "30052005";
+const char *mqtt_server = "192.168.0.107";
 const char *mqtt_username = "kienok"; 
 const char *mqtt_password = "kienok";
 const char *mqtt_username2 = "kienkk"; 
@@ -57,22 +57,22 @@ void callback(char *topic, byte *payload, unsigned int length) {
   }
   Serial.println();
   
-    if ((char)payload[0] == 'o' && (char)payload[1] == 'f' && (char)payload[2] == 'f' && (char)payload[3] == '1') {
+    if ((char)payload[0] == 'o' && (char)payload[1] == 'f' && (char)payload[2] == 'f' && (char)payload[3] == 'f' && (char)payload[4] == 'a' && (char)payload[5] == 'n') {
       digitalWrite(D1, LOW);
-      client.publish("device/led/status", "LED 1 OFF");
-      Serial.println("LED 1 OFF");
-    } else if ((char)payload[0] == 'o' && (char)payload[1] == 'n' && (char)payload[2] == '1') {
+      client.publish("device/led/status", "FAN OFF");
+      Serial.println("FAN OFF");
+    } else if ((char)payload[0] == 'o' && (char)payload[1] == 'n' && (char)payload[2] == 'f' && (char)payload[3] == 'a' && (char)payload[4] == 'n') {
       digitalWrite(D1, HIGH);
-      client.publish("device/led/status", "LED 1 ON");
-      Serial.println("LED 1 ON");
-    } else if ((char)payload[0] == 'o' && (char)payload[1] == 'n' && (char)payload[2] == '2') {
+      client.publish("device/led/status", "FAN ON");
+      Serial.println("FAN ON");
+    } else if ((char)payload[0] == 'o' && (char)payload[1] == 'n' && (char)payload[2] == 'l' && (char)payload[3] == 'e' && (char)payload[4] == 'd') {
       digitalWrite(D2, HIGH);
-      client.publish("device/led/status", "LED 2 ON");
-      Serial.println("LED 2 ON");
-    } else if ((char)payload[0] == 'o' && (char)payload[1] == 'f' && (char)payload[2] == 'f' && (char)payload[3] == '2') {
+      client.publish("device/led/status", "LED ON");
+      Serial.println("LED ON");
+    } else if ((char)payload[0] == 'o' && (char)payload[1] == 'f' && (char)payload[2] == 'f' && (char)payload[3] == 'l' && (char)payload[4] == 'e' && (char)payload[5] == 'd') {
       digitalWrite(D2, LOW);
-      client.publish("device/led/status", "LED 2 OFF");
-      Serial.println("LED 2 OFF");
+      client.publish("device/led/status", "LED OFF");
+      Serial.println("LED OFF");
     }
   }
 
@@ -149,7 +149,7 @@ if (now - lastTime > 5000) {
 
 
     // Publish data to MQTT
-   String data = "Temperature: " + String(temperature) + " -" + " Humidity: " + String(humidity) + " -" + " Light: " + String((int)lightIntensity);
+   String data =String(temperature) + " " + String(humidity) + " " + String((int)lightIntensity);
   char dataChar[data.length() + 1];
   data.toCharArray(dataChar, sizeof(dataChar));
   client.publish(topic, dataChar);

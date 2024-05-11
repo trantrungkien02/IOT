@@ -476,6 +476,27 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "in": "query",
+            "name": "orderBy",
+            "description": "Order by",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "id_ASC",
+                "id_DESC",
+                "temperature_ASC",
+                "temperature_DESC",
+                "humidity_ASC",
+                "humidity_DESC",
+                "light_ASC",
+                "light_DESC",
+                "createdAt_ASC",
+                "createdAt_DESC"
+              ]
+            }
           }
         ],
         "responses": {
@@ -865,6 +886,16 @@
             "required": true,
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "orderBy",
+            "description": "Order by ",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["id_ASC", "id_DESC", "deviceName_ASC", "deviceName_DESC", "action_ASC", "action_DESC", "createdAt_ASC", "createdAt_DESC"]
             }
           }
         ],

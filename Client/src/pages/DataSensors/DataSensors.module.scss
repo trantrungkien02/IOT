@@ -1,8 +1,68 @@
 /* DataSensors.module.scss */
 
 .base {
-  padding-top: 20px;
+  padding-top: 10px;
 }
+
+/* Định nghĩa kiểu cho form */
+.s003 {
+  width: 80%; /* Form chiếm toàn bộ chiều rộng */
+  padding: 10px 10px 0 10px; /* Thêm khoảng cách */
+  background-color: #f5f5f5; /* Màu nền nhạt */
+  margin: 0 auto;
+}
+
+.inner-form {
+  display: flex; /* Tạo bố trí nằm ngang */
+  align-items: center; /* Căn giữa theo trục đứng */
+}
+
+/* Định nghĩa kiểu cho các trường chọn (select) */
+.input-select {
+  position: relative;
+  padding-right: 10px; /* Thêm khoảng cách bên phải */
+}
+
+.input-select select {
+  padding: 10px; /* Khoảng cách bên trong */
+  background-color: white; /* Nền trắng */
+  font-size: 14px; /* Kích thước chữ */
+  border: none;
+}
+
+/* Định nghĩa kiểu cho các trường input */
+.input-field {
+  border: none;
+}
+
+.input-field input {
+  padding: 15px; /* Khoảng cách bên trong */
+  font-size: 14px; /* Kích thước chữ */
+  border: none;
+}
+
+/* Định nghĩa kiểu cho nút tìm kiếm */
+.btn-search {
+  background-color: #4caf50; /* Màu xanh lục */
+  border: none; /* Không viền */
+  margin-left: 10px;
+  border-radius: 5px; /* Bo tròn các góc */
+  padding: 15px; /* Khoảng cách bên trong */
+  color: white; /* Chữ trắng */
+  cursor: pointer; /* Con trỏ chuột khi di chuyển qua */
+  transition: background-color 0.3s; /* Thêm hiệu ứng chuyển tiếp */
+}
+
+.btn-search:hover {
+  background-color: #45a049; /* Màu khi di chuột qua */
+}
+
+/* Định nghĩa kiểu cho icon SVG */
+.svg-inline--fa {
+  width: 16px; /* Chiều rộng của icon */
+  height: 16px; /* Chiều cao của icon */
+}
+
 /* Styling for the sensor table */
 .sensor-table-div {
   width: 80%;

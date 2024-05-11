@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+// import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import axios from 'axios';
+// import mqtt from 'mqtt';
 import classNames from 'classnames/bind';
 import styles from './Board.module.scss';
 import fan from '../../images/fan2.png';
@@ -10,13 +11,14 @@ import humidityicon from '../../images/humidity.png';
 import temperatureicon from '../../images/tem.png';
 import sunicon from '../../images/sun.png';
 import Navigation from '../../components/Navigation/Navigation';
+import RealTimeLineChart from '../../components/Rechart/Rechart';
 
 const cx = classNames.bind(styles);
 
 function getRandomValue(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
-// const mqttServer = 'mqtt://192.168.55.13'; // Địa chỉ của MQTT broker
+// const mqttServer = 'mqtt://192.168.50.13'; // Địa chỉ của MQTT broker
 // const mqttOptions = {
 //   port: 1993,
 //   username: 'kienok', // Tên người dùng MQTT
@@ -71,15 +73,68 @@ function Board() {
   const [isChecked, setIsChecked] = useState(false);
   const [isChecked1, setIsChecked1] = useState(false);
   const [isLightOn, setIsLightOn] = useState(false);
+  const [client, setClient] = useState(null);
   const [data1, setData1] = useState([]);
   // const [hideBackground, setHideBackground] = useState(false);
   const handleCheckboxFan = () => {
-    setIsSpinning(prevSpinning => !prevSpinning);
-    setIsChecked(prevChecked => !prevChecked);
+    // Nếu đèn đang tắt (isLightOn là false), thực hiện cuộc gọi API trước khi bật đèn
+    const action = isSpinning ? 'offfan' : 'onfan'; // Nếu đèn đang sáng thì tắt, nếu đèn đang tắt thì bật
+
+    const fetchData = async () => {
+      try {
+        const response = await axios.post('http://localhost:3001/actionhistory/create', {
+          deviceName: 'FAN',
+          action, // Sử dụng hành động dựa trên trạng thái hiện tại
+        });
+
+        if (response.data.mqttMessage === 'FAN ON') {
+          // Đợi 1 giây rồi mới thay đổi trạng thái của đèn
+          setTimeout(() => {
+            setIsSpinning(true);
+            setIsChecked(true);
+          }, 500);
+        } else if (response.data.mqttMessage === 'FAN OFF') {
+          setTimeout(() => {
+            setIsSpinning(false);
+            setIsChecked(false);
+          }, 500);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData(); // Gọi hàm fetch để thực hiện yêu cầu POST
   };
   const handleCheckboxLight = () => {
-    setIsLightOn(prevLightOn => !prevLightOn);
-    setIsChecked1(prevChecked1 => !prevChecked1);
+    // Nếu đèn đang tắt (isLightOn là false), thực hiện cuộc gọi API trước khi bật đèn
+    const action = isLightOn ? 'offled' : 'onled'; // Nếu đèn đang sáng thì tắt, nếu đèn đang tắt thì bật
+
+    const fetchData = async () => {
+      try {
+        const response = await axios.post('http://localhost:3001/actionhistory/create', {
+          deviceName: 'LED',
+          action, // Sử dụng hành động dựa trên trạng thái hiện tại
+        });
+
+        if (response.data.mqttMessage === 'LED ON') {
+          // Đợi 1 giây rồi mới thay đổi trạng thái của đèn
+          setTimeout(() => {
+            setIsLightOn(true);
+            setIsChecked1(true);
+          }, 500);
+        } else if (response.data.mqttMessage === 'LED OFF') {
+          setTimeout(() => {
+            setIsLightOn(false);
+            setIsChecked1(false);
+          }, 500);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData(); // Gọi hàm fetch để thực hiện yêu cầu POST
   };
   const [datasensor, setDataSenSor] = useState([]);
 
@@ -177,7 +232,7 @@ function Board() {
         </div>
         <div className={cx('display')}>
           <div className={cx('chart', 'chart-bg')}>
-            <BarChart width={800} height={400} data={data1}>
+            {/* <BarChart width={800} height={400} data={data1}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" />
               <YAxis />
@@ -186,7 +241,8 @@ function Board() {
               <Bar dataKey="temperature" fill="#FF5733" name="TEMPERATURE" />
               <Bar dataKey="humidity" fill="#33A0FF" name="HUMIDITY" />
               <Bar dataKey="light" fill="#FFD700" name="LIGHT" />
-            </BarChart>
+            </BarChart> */}
+            <RealTimeLineChart />
           </div>
           <div className={cx('improve')}>
             <div className={cx('fan', 'humidity')}>

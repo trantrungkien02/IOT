@@ -30,7 +30,7 @@ class dataSensorController {
         light,
       });
 
-      console.log('Sensor data saved:', newSensorData);
+      // console.log('Sensor data saved:', newSensorData);
     } catch (error) {
       console.error('Error processing and saving sensor data:', error);
     }
@@ -99,7 +99,7 @@ class dataSensorController {
         }
       });
 
-      res.send({
+      return res.send({
         totalCount: totalCount, // Tổng số lượng dữ liệu
         data: sensorData, // Dữ liệu trả về theo trang và đã sắp xếp
       });
@@ -110,11 +110,11 @@ class dataSensorController {
 
   async getByField(req, res, next) {
     try {
-      const { field, value, page, pageSize } = req.query;
+      const { field, value, page, pageSize, orderBy } = req.query;
 
+      // Xây dựng điều kiện whereCondition
       let whereCondition = {};
-
-      if (field != 'all' && value) {
+      if (field !== 'all' && value) {
         whereCondition[field] = { [Sequelize.Op.substring]: value };
       } else if (field === 'all' && value) {
         whereCondition = {
@@ -127,11 +127,13 @@ class dataSensorController {
           ],
         };
       }
-
+      console.log(whereCondition);
       const limit = pageSize ? parseInt(pageSize) : 10;
       const offset = page ? (parseInt(page) - 1) * limit : 0;
 
       const SensorData = await dataSensor();
+
+      // Lấy dữ liệu theo phân trang (pagination)
       let sensorData = await SensorData.findAll({
         where: whereCondition,
         limit: limit,
@@ -139,15 +141,56 @@ class dataSensorController {
       });
 
       if (sensorData.length === 0) {
-        return res.status(404).send(`No data found for the provided value '${value}'.`);
+        return res.send(`Value '${value}' was not found in the '${field} field'.`);
       }
+
+      // Chuyển đổi sang định dạng phù hợp
       sensorData = sensorData.map(data => ({
         ...data.toJSON(),
         createdAt: convertDbTimeToAppTime(data.createdAt).toISO(), // Chuyển đổi thời gian của createdAt
       }));
-      res.send(sensorData);
+
+      // Sắp xếp dữ liệu trong phạm vi trang hiện tại
+      sensorData.sort((a, b) => {
+        const createdAtA = DateTime.fromISO(a.createdAt);
+        const createdAtB = DateTime.fromISO(b.createdAt);
+
+        switch (orderBy) {
+          case 'id_ASC':
+            return a.id - b.id;
+          case 'id_DESC':
+            return b.id - a.id;
+          case 'temperature_ASC':
+            return a.temperature - b.temperature;
+          case 'temperature_DESC':
+            return b.temperature - a.temperature;
+          case 'humidity_ASC':
+            return a.humidity - b.humidity;
+          case 'humidity_DESC':
+            return b.humidity - a.humidity;
+          case 'light_ASC':
+            return a.light - b.light;
+          case 'light_DESC':
+            return b.light - a.light;
+          case 'createdAt_ASC':
+            return createdAtA - createdAtB;
+          case 'createdAt_DESC':
+            return createdAtB - createdAtA;
+          default:
+            return 0; // Nếu không có orderBy phù hợp
+        }
+      });
+
+      const totalCount = await SensorData.count({
+        where: whereCondition,
+      });
+
+      return res.send({
+        totalCount, // Tổng số lượng dữ liệu phù hợp với điều kiện tìm kiếm
+        data: sensorData, // Dữ liệu trả về theo trang đã sắp xếp
+      });
     } catch (error) {
-      next(error);
+      next(error); // Xử lý lỗi nếu có
     }
   }
 
@@ -192,7 +235,7 @@ class dataSensorController {
     }
   }
 }
-const mqttServer = 'mqtt://192.168.55.13'; // Địa chỉ của MQTT broker
+const mqttServer = 'mqtt://192.168.0.107'; // Địa chỉ của MQTT broker
 const mqttOptions = {
   port: 1993,
   username: 'kienok', // Tên người dùng MQTT
