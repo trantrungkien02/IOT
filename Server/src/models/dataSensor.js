@@ -1,5 +1,6 @@
 const { Sequelize, DataTypes } = require('sequelize');
-const { connect } = require('../../config/db/connectdb');
+const { connect } = require('../config/db/connectdb');
+const moment = require('moment');
 
 async function dataSensor() {
   try {
@@ -15,11 +16,6 @@ async function dataSensor() {
       },
     });
     // console.log(sequelize);
-    try {
-      await callback(sequelize); // Sử dụng sequelize để thực hiện nhiệm vụ
-    } finally {
-      await sequelize.close(); // Đảm bảo kết nối được đóng ngay cả khi có lỗi
-    }
 
     const SensorData = sequelize.define(
       'data_sensors',

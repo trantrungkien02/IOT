@@ -89,6 +89,8 @@ class dataSensorController {
           return b.humidity - a.humidity;
         } else if (orderBy === 'light_ASC') {
           return a.light - b.light;
+        } else if (orderBy === 'light_DESC') {
+          return b.light - a.light;
         } else if (orderBy === 'createdAt_ASC') {
           return createdAtA - createdAtB;
         } else if (orderBy === 'createdAt_DESC') {
@@ -235,7 +237,7 @@ class dataSensorController {
     }
   }
 }
-const mqttServer = 'mqtt://192.168.0.107'; // Địa chỉ của MQTT broker
+const mqttServer = 'mqtt://192.168.0.102'; // Địa chỉ của MQTT broker
 const mqttOptions = {
   port: 1993,
   username: 'kienok', // Tên người dùng MQTT

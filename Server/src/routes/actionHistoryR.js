@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const actionHistoryController = require('../action-history/controllers/actionHistoryController');
+const actionHistoryController = require('../controllers/actionHistoryController');
 
 router.get('/actionhistory', actionHistoryController.getAll);
 router.get('/actionhistory/search/:field', actionHistoryController.getByField);

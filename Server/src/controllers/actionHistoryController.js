@@ -3,7 +3,8 @@ const Sequelize = require('sequelize');
 const moment = require('moment-timezone');
 const mqtt = require('mqtt');
 const { DateTime } = require('luxon');
-
+const client = require('../config/mqttConnect/mqttClient');
+const { getGeneralAction } = require('../generalmethods/getGeneralAction');
 function convertDbTimeToAppTime(dbTime) {
   return DateTime.fromJSDate(dbTime, { zone: 'UTC' }).setZone('Asia/Ho_Chi_Minh');
 }
@@ -17,32 +18,32 @@ class actionHistoryController {
       let orderCriteria = [];
       let attributes = ['id', 'deviceName', 'action', 'createdAt'];
 
-      switch (orderBy) {
-        case 'id_ASC':
-          orderCriteria = [['id', 'ASC']];
-          break;
-        case 'id_DESC':
-          orderCriteria = [['id', 'DESC']];
-          break;
-        case 'deviceName_ASC':
-          orderCriteria = [['deviceName', 'ASC']];
-          break;
-        case 'deviceName_DESC':
-          orderCriteria = [['deviceName', 'DESC']];
-          break;
-        case 'action_ASC':
-          orderCriteria = [['action', 'ASC']];
-          break;
-        case 'action_DESC':
-          orderCriteria = [['action', 'DESC']];
-          break;
-        case 'createdAt_ASC':
-          orderCriteria = [['createdAt', 'ASC']];
-          break;
-        case 'createdAt_DESC':
-          orderCriteria = [['createdAt', 'DESC']];
-          break;
-      }
+      // switch (orderBy) {
+      //   case 'id_ASC':
+      //     orderCriteria = [['id', 'ASC']];
+      //     break;
+      //   case 'id_DESC':
+      //     orderCriteria = [['id', 'DESC']];
+      //     break;
+      //   case 'deviceName_ASC':
+      //     orderCriteria = [['deviceName', 'ASC']];
+      //     break;
+      //   case 'deviceName_DESC':
+      //     orderCriteria = [['deviceName', 'DESC']];
+      //     break;
+      //   case 'action_ASC':
+      //     orderCriteria = [['action', 'ASC']];
+      //     break;
+      //   case 'action_DESC':
+      //     orderCriteria = [['action', 'DESC']];
+      //     break;
+      //   case 'createdAt_ASC':
+      //     orderCriteria = [['createdAt', 'ASC']];
+      //     break;
+      //   case 'createdAt_DESC':
+      //     orderCriteria = [['createdAt', 'DESC']];
+      //     break;
+      // }
 
       if (filterBy === 'deviceName') {
         attributes = attributes.filter(attr => attr !== 'action');
@@ -193,11 +194,12 @@ class actionHistoryController {
     try {
       const { deviceName, action } = req.body;
 
+      const generalAction = getGeneralAction(action);
       // Tạo ActionHistory mới
       const ActionHistory = await actionHistoryModel();
       const newActionHistory = await ActionHistory.create({
         deviceName,
-        action,
+        action: generalAction,
       });
 
       // Xuất bản tới MQTT
@@ -311,29 +313,29 @@ class actionHistoryController {
     }
   }
 }
-const mqttServer = 'mqtt://192.168.0.107'; // Địa chỉ của MQTT broker
-const mqttOptions = {
-  port: 1993,
-  username: 'kienok', // Tên người dùng MQTT
-  password: 'kienok', // Mật khẩu MQTT
-};
-const client = mqtt.connect(mqttServer, mqttOptions);
+// const mqttServer = 'mqtt://192.168.0.102'; // Địa chỉ của MQTT broker
+// const mqttOptions = {
+//   port: 1993,
+//   username: 'kienok', // Tên người dùng MQTT
+//   password: 'kienok', // Mật khẩu MQTT
+// };
+// const client = mqtt.connect(mqttServer, mqttOptions);
 
-client.on('connect', () => {
-  console.log('Connected to MQTT broker');
-  client.subscribe('datasensor'); // Đăng ký subscribe vào chủ đề 'datasensor'
-});
-client.on('message', (topic, message) => {
-  console.log('Received message from topic:', topic);
-  console.log('Message:', message.toString());
-  // Xử lý dữ liệu nhận được từ MQTT
-});
+// client.on('connect', () => {
+//   console.log('Connected to MQTT broker');
+//   client.subscribe('datasensor'); // Đăng ký subscribe vào chủ đề 'datasensor'
+// });
+// client.on('message', (topic, message) => {
+//   console.log('Received message from topic:', topic);
+//   console.log('Message:', message.toString());
+//   // Xử lý dữ liệu nhận được từ MQTT
+// });
 
-client.on('error', error => {
-  console.error('MQTT error:', error);
-});
+// client.on('error', error => {
+//   console.error('MQTT error:', error);
+// });
 
-client.on('close', () => {
-  console.log('Disconnected from MQTT broker');
-});
+// client.on('close', () => {
+//   console.log('Disconnected from MQTT broker');
+// });
 module.exports = new actionHistoryController();

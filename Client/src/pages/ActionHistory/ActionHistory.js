@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import mqtt from 'mqtt';
 import { Pagination, Select, MenuItem } from '@mui/material';
@@ -17,7 +18,7 @@ function ActionHistory() {
   const [fieldName, setFieldName] = useState('all'); // Trạng thái cho tùy chọn được chọn
   const [searchValue, setSearchValue] = useState(''); // Trạng thái cho giá trị nhập vào
   const [searchState, setSearchState] = useState(1);
-
+  const navigate = useNavigate();
   const handleChangePage = (event, value) => {
     setPage(value);
     setOrderBy('');
@@ -52,12 +53,13 @@ function ActionHistory() {
   // Hàm xử lý khi nút tìm kiếm được nhấp
   const handleSearchClick = () => {
     setSearchState(prevState => prevState + 1);
+    setPage(1);
     console.log(searchState);
   };
   const deleteSearchState = () => {
     setSearchState(1);
     setSearchValue('');
-    setFieldName('All');
+    setFieldName('all');
   };
   const [actionhistory, setActionHistory] = useState([]);
   useEffect(() => {
@@ -74,6 +76,18 @@ function ActionHistory() {
           setActionHistory(response.data);
           console.log(response.data);
         }
+        const queryParams = new URLSearchParams({
+          page,
+          pageSize,
+          orderBy,
+          field: fieldName,
+          value: searchValue,
+        }).toString();
+
+        navigate({
+          pathname: '/actionhistory',
+          search: `?${queryParams}`,
+        });
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -85,7 +99,7 @@ function ActionHistory() {
   }, [itemsPerPage, page, orderBy, searchState]);
 
   const getActionColor = action => {
-    if (action === 'on') {
+    if (action === 'ON') {
       return '#52a0b8'; // Green color for LAMP ON
     } else {
       return '#333'; // Default color
@@ -209,9 +223,7 @@ function ActionHistory() {
       <div className={cx('history-table-div')} style={{ height: '68vh', overflowY: 'auto' }}>
         <table className={cx('history-table')}>
           <tbody>
-            {actionhistory &&
-              actionhistory.data &&
-              actionhistory.data.length > 0 &&
+            {actionhistory && actionhistory.data && actionhistory.data.length > 0 ? (
               actionhistory.data.map(item => (
                 <tr key={item.id}>
                   <td>{item.id}</td>
@@ -219,13 +231,19 @@ function ActionHistory() {
                   <td style={{ color: getActionColor(item.action) }}>{item.action}</td>
                   <td>{convertDateTime(item.createdAt)}</td>
                 </tr>
-              ))}
+              ))
+            ) : (
+              <tr>
+                <td colSpan="4">NO DATA</td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
 
       <div className={cx('page')}>
-        <div>Total Pages: {totalPages}</div>
+        <div>Total Pages: {isNaN(parseInt(totalPages)) ? 0 : parseInt(totalPages)}</div>
+
         <Pagination
           count={totalPages} // Tổng số trang
           page={page} // Trang hiện tại

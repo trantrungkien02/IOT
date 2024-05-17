@@ -3,7 +3,7 @@ const actionHistoryRouter = require('./actionHistoryR');
 const dashBoardRouter = require('./dashboardR');
 const swaggerJSDoc = require('../../swagger.json');
 const swaggerUi = require('swagger-ui-express');
-const dataSensorController = require('../data-sensor/controllers/dataSensorController');
+// const dataSensorController = require('../data-sensor/controllers/dataSensorController');
 
 function route(app) {
   app.use('/api', swaggerUi.serve, swaggerUi.setup(swaggerJSDoc));

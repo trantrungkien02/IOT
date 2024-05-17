@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import moment from 'moment';
 import { Pagination, Select, MenuItem } from '@mui/material';
@@ -22,7 +23,7 @@ function DataSensors() {
   const [fieldName, setFieldName] = useState('all'); // Trạng thái cho tùy chọn được chọn
   const [searchValue, setSearchValue] = useState(''); // Trạng thái cho giá trị nhập vào
   const [searchState, setSearchState] = useState(1);
-
+  const navigate = useNavigate();
   // console.log(orderBy);
   const handleChangePage = (event, value) => {
     setPage(value);
@@ -58,6 +59,7 @@ function DataSensors() {
   // Hàm xử lý khi nút tìm kiếm được nhấp
   const handleSearchClick = () => {
     setSearchState(prevState => prevState + 1);
+    setPage(1);
     console.log(searchState);
   };
   const deleteSearchState = () => {
@@ -70,17 +72,35 @@ function DataSensors() {
   useEffect(() => {
     const fetchData = async (page, pageSize, orderBy, fieldName, searchValue) => {
       try {
+        let queryParams;
         if (searchState !== 1) {
           const response = await axios.get(
             `http://localhost:3001/datasensor/search/{field}?page=${page}&pageSize=${pageSize}&field=${fieldName}&value=${searchValue}&orderBy=${orderBy}`,
           );
           setDataSenSor(response.data);
+          queryParams = new URLSearchParams({
+            page,
+            pageSize,
+            orderBy,
+            field: fieldName,
+            value: searchValue,
+          }).toString();
           console.log(response.data);
         } else {
           const response = await axios.get(`http://localhost:3001/datasensor?page=${page}&pageSize=${pageSize}&orderBy=${orderBy}`);
           setDataSenSor(response.data);
+          queryParams = new URLSearchParams({
+            page,
+            pageSize,
+            orderBy,
+          }).toString();
           console.log(response.data);
         }
+
+        navigate({
+          pathname: '/datasensor',
+          search: `?${queryParams}`,
+        });
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -265,7 +285,7 @@ function DataSensors() {
               ))
             ) : (
               <tr>
-                <td colSpan="5">{datasensor}</td>
+                <td colSpan="5">NO DATA</td>
               </tr>
             )}
           </tbody>
@@ -273,7 +293,7 @@ function DataSensors() {
       </div>
 
       <div className={cx('page')}>
-        <div>Total Pages: {parseInt(totalPages)}</div>
+        <div>Total Pages: {isNaN(parseInt(totalPages)) ? 0 : parseInt(totalPages)}</div>
 
         <Pagination
           count={totalPages} // Tổng số trang

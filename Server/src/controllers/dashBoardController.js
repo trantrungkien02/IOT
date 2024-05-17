@@ -1,4 +1,4 @@
-const dataSensor = require('../../data-sensor/models/dataSensor');
+const dataSensor = require('../models/dataSensor');
 const Sequelize = require('sequelize');
 
 class dashBoardController {
@@ -74,7 +74,7 @@ class dashBoardController {
       }
 
       const limit = pageSize ? parseInt(pageSize) : 10;
-      const offset = page ? (parseInt(page) - 1) * limit : 0; 
+      const offset = page ? (parseInt(page) - 1) * limit : 0;
 
       const SensorData = await dataSensor();
       const sensorData = await SensorData.findAll({

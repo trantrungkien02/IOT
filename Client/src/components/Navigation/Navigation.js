@@ -24,8 +24,8 @@ const Navigation = () => {
           DASHBOARD
         </Link>
       </div>
-      <div className={cx('Nav-child', { 'Nav-link-active': activeTab.includes('/datasensors') })}>
-        <Link to="/datasensors" className={cx('Nav-link')} onClick={() => handleTabClick('/datasensors')}>
+      <div className={cx('Nav-child', { 'Nav-link-active': activeTab === '/datasensor' })}>
+        <Link to="/datasensor" className={cx('Nav-link')} onClick={() => handleTabClick('/datasensor')}>
           DATA SENSORS
         </Link>
       </div>

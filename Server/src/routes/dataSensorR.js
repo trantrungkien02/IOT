@@ -3,7 +3,7 @@ const router = express.Router();
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 
-const dataSensorController = require('../data-sensor/controllers/dataSensorController');
+const dataSensorController = require('../controllers/dataSensorController');
 
 router.get('/datasensor', dataSensorController.getAll);
 router.get('/datasensor/search/:field', dataSensorController.getByField);

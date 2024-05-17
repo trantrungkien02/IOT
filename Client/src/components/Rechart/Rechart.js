@@ -60,7 +60,7 @@ const RealTimeLineChart = () => {
         }}
       />
       {/* Trục Y bên trái dùng cho nhiệt độ và độ ẩm */}
-      <YAxis yAxisId="left" domain={[0, 100]} />
+      <YAxis yAxisId="left" domain={[0, 100]} label={{ value: '°C or %', angle: 0, position: 'insideTop', dy: -30 }} />
       {/* Trục Y bên phải dùng cho ánh sáng */}
       <YAxis yAxisId="right" domain={[0, 1000]} orientation="right" />
       <Line yAxisId="left" type="monotone" dataKey="temperature" stroke="#ff7300" name="Temperature (°C)" />

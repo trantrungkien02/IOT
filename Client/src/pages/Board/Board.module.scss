@@ -1,13 +1,20 @@
 body {
-  background-color: #f8f9fa;
+  background-image: url('https://www.daysoftheyear.com/wp-content/uploads/look-up-at-the-sky-day-1.jpg');
+  background-size: cover; /* Đảm bảo hình ảnh phủ kín toàn bộ phần tử */
+  background-position: center; /* Đặt vị trí của hình ảnh ở giữa */
 }
 .bro {
   padding-top: 20px;
+  // background-image: url('https://img.lovepik.com/background/20211021/large/lovepik-weather-forecast-background-image_401544608.jpg');
+  // background-size: cover; /* Đảm bảo hình ảnh phủ kín toàn bộ phần tử */
+  // background-position: center; /* Đặt vị trí của hình ảnh ở giữa */
+  // width: 100%; /* Đặt chiều rộng của phần tử */
+  // height: 100%; /* Đặt chiều cao của phần tử */
 }
 .board {
   width: 80%;
   margin: 20px auto;
-  background-color: #fff;
+  background-color: #dee1e7;
   // border: 1px solid #ddd;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   padding: 50px 50px 80px 50px;

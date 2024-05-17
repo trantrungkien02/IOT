@@ -232,16 +232,6 @@ function Board() {
         </div>
         <div className={cx('display')}>
           <div className={cx('chart', 'chart-bg')}>
-            {/* <BarChart width={800} height={400} data={data1}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="temperature" fill="#FF5733" name="TEMPERATURE" />
-              <Bar dataKey="humidity" fill="#33A0FF" name="HUMIDITY" />
-              <Bar dataKey="light" fill="#FFD700" name="LIGHT" />
-            </BarChart> */}
             <RealTimeLineChart />
           </div>
           <div className={cx('improve')}>

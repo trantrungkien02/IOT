@@ -1,45 +1,35 @@
 const { Sequelize, DataTypes } = require('sequelize');
-const { connect } = require('../../config/db/connectdb');
-const moment = require('moment');
+const { connect } = require('../config/db/connectdb');
 
-async function dataSensor() {
+async function actionHistory() {
   try {
     const url = await connect();
     const sequelize = new Sequelize(url, {
       host: 'localhost',
       dialect: 'mysql',
       timezone: '+07:00',
-      pool: {
-        max: 5,
-        min: 0,
-        idle: 10000,
-      },
     });
-    // console.log(sequelize);
 
-    const SensorData = sequelize.define(
-      'data_sensors',
+    const ActionHistoryModel = sequelize.define(
+      'action_histories',
       {
         id: {
           type: DataTypes.INTEGER,
           primaryKey: true,
           autoIncrement: true,
         },
-        temperature: {
-          type: DataTypes.FLOAT,
+        deviceName: {
+          type: DataTypes.STRING,
           allowNull: false,
         },
-        humidity: {
-          type: DataTypes.FLOAT,
-          allowNull: false,
-        },
-        light: {
-          type: DataTypes.FLOAT,
+        action: {
+          type: DataTypes.STRING,
           allowNull: false,
         },
         createdAt: {
           type: DataTypes.DATE,
           defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
+          allowNull: false,
         },
       },
       {
@@ -47,12 +37,11 @@ async function dataSensor() {
       },
     );
 
-    // console.log(SensorData);
-    return SensorData;
+    return ActionHistoryModel;
   } catch (error) {
     console.error('Loi:', error);
     throw error;
   }
 }
 
-module.exports = dataSensor;
+module.exports = actionHistory;

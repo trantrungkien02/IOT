@@ -10,9 +10,9 @@
 
 DHT_Unified dht(DHTPIN, DHTTYPE);
 
-const char *ssid = "Trần Quyết";
-const char *password = "30052005";
-const char *mqtt_server = "192.168.0.107";
+const char *ssid = "Kim Hoang 5G";
+const char *password = "88888888";
+const char *mqtt_server = "192.168.0.102";
 const char *mqtt_username = "kienok"; 
 const char *mqtt_password = "kienok";
 const char *mqtt_username2 = "kienkk"; 
