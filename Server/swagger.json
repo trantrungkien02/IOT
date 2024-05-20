@@ -344,6 +344,8 @@
                 "humidity_DESC",
                 "light_ASC",
                 "light_DESC",
+                "dust_ASC",
+                "dust_DESC",
                 "createdAt_ASC",
                 "createdAt_DESC"
               ]
@@ -382,6 +384,9 @@
                       "light": {
                         "type": "number"
                       },
+                      "dust": {
+                        "type": "number"
+                      },
                       "createdAt": {
                         "type": "string",
                         "format": "date-time"
@@ -394,6 +399,7 @@
                       "temperature": 25,
                       "humidity": 60,
                       "light": 80,
+                      "dust": 50,
                       "createdAt": "2024-03-28T12:00:00Z"
                     },
                     {
@@ -401,6 +407,7 @@
                       "temperature": 26,
                       "humidity": 62,
                       "light": 78,
+                      "dust": 50,
                       "createdAt": "2024-03-28T12:10:00Z"
                     },
                     {
@@ -408,6 +415,7 @@
                       "temperature": 27,
                       "humidity": 63,
                       "light": 75,
+                      "dust": 50,
                       "createdAt": "2024-03-28T12:20:00Z"
                     },
                     {
@@ -415,6 +423,7 @@
                       "temperature": 28,
                       "humidity": 65,
                       "light": 72,
+                      "dust": 50,
                       "createdAt": "2024-03-28T12:30:00Z"
                     },
                     {
@@ -422,6 +431,7 @@
                       "temperature": 29,
                       "humidity": 67,
                       "light": 70,
+                      "dust": 50,
                       "createdAt": "2024-03-28T12:40:00Z"
                     }
                   ]
@@ -465,11 +475,159 @@
             "required": true,
             "schema": {
               "type": "string",
-              "enum": ["all", "id", "temperature", "humidity", "light", "createdAt"]
+              "enum": ["all", "id", "temperature", "humidity", "light", "dust", "createdAt"]
             }
           },
           {
             "name": "value",
+            "in": "query",
+            "description": "Value to search for the specified field",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "orderBy",
+            "description": "Order by",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "id_ASC",
+                "id_DESC",
+                "temperature_ASC",
+                "temperature_DESC",
+                "humidity_ASC",
+                "humidity_DESC",
+                "light_ASC",
+                "light_DESC",
+                "dust_ASC",
+                "dust_DESC",
+                "createdAt_ASC",
+                "createdAt_DESC"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get data successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "temperature": {
+                        "type": "number"
+                      },
+                      "humidity": {
+                        "type": "number"
+                      },
+                      "light": {
+                        "type": "number"
+                      },
+                      "dust": {
+                        "type": "number"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      }
+                    }
+                  },
+                  "example": [
+                    {
+                      "id": 1,
+                      "temperature": 25,
+                      "humidity": 60,
+                      "light": 80,
+                      "dust": 50,
+                      "createdAt": "2024-03-28T12:00:00Z"
+                    },
+                    {
+                      "id": 2,
+                      "temperature": 26,
+                      "humidity": 62,
+                      "light": 78,
+                      "dust": 50,
+                      "createdAt": "2024-03-28T12:10:00Z"
+                    },
+                    {
+                      "id": 3,
+                      "temperature": 27,
+                      "humidity": 63,
+                      "light": 75,
+                      "dust": 50,
+                      "createdAt": "2024-03-28T12:20:00Z"
+                    },
+                    {
+                      "id": 4,
+                      "temperature": 28,
+                      "humidity": 65,
+                      "light": 72,
+                      "dust": 50,
+                      "createdAt": "2024-03-28T12:30:00Z"
+                    },
+                    {
+                      "id": 5,
+                      "temperature": 29,
+                      "humidity": 67,
+                      "light": 70,
+                      "dust": 50,
+                      "createdAt": "2024-03-28T12:40:00Z"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/datasensor/searchcreatedat": {
+      "get": {
+        "tags": ["datasensor"],
+        "description": "Get DataSensor data based on the specified field",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "description": "Page number",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "in": "query",
+            "name": "pageSize",
+            "description": "Number of items per page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "description": "Field to retrieve",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
             "in": "query",
             "description": "Value to search for the specified field",
             "required": true,
@@ -892,6 +1050,125 @@
             "in": "query",
             "name": "orderBy",
             "description": "Order by ",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["id_ASC", "id_DESC", "deviceName_ASC", "deviceName_DESC", "action_ASC", "action_DESC", "createdAt_ASC", "createdAt_DESC"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get data successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "deviceName": {
+                        "type": "string"
+                      },
+                      "action": {
+                        "type": "string"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      }
+                    }
+                  },
+                  "example": [
+                    {
+                      "id": 1,
+                      "deviceName": "Device1",
+                      "action": "on",
+                      "createdAt": "2024-03-28T12:00:00Z"
+                    },
+                    {
+                      "id": 2,
+                      "deviceName": "Device2",
+                      "action": "off",
+                      "createdAt": "2024-03-28T12:10:00Z"
+                    },
+                    {
+                      "id": 3,
+                      "deviceName": "Device3",
+                      "action": "on",
+                      "createdAt": "2024-03-28T12:20:00Z"
+                    },
+                    {
+                      "id": 4,
+                      "deviceName": "Device4",
+                      "action": "off",
+                      "createdAt": "2024-03-28T12:30:00Z"
+                    },
+                    {
+                      "id": 5,
+                      "deviceName": "Device5",
+                      "action": "on",
+                      "createdAt": "2024-03-28T12:40:00Z"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/actionhistory/searchcreatedat": {
+      "get": {
+        "tags": ["actionhistory"],
+        "description": "Get Actionhistory data based on the specified field",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "description": "Page number",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "in": "query",
+            "name": "pageSize",
+            "description": "Number of items per page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "description": "Field to retrieve",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "description": "Value to search for the specified field",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "orderBy",
+            "description": "Order by",
             "required": true,
             "schema": {
               "type": "string",

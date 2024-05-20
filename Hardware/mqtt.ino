@@ -10,9 +10,9 @@
 
 DHT_Unified dht(DHTPIN, DHTTYPE);
 
-const char *ssid = "Kim Hoang 5G";
+const char *ssid = "Kim Hoang";
 const char *password = "88888888";
-const char *mqtt_server = "192.168.0.102";
+const char *mqtt_server = "192.168.0.100";
 const char *mqtt_username = "kienok"; 
 const char *mqtt_password = "kienok";
 const char *mqtt_username2 = "kienkk"; 
@@ -24,7 +24,8 @@ WiFiClient espClient;
 PubSubClient client(espClient);
 
 unsigned long lastTime = 0;
-float temperature, humidity, lightIntensity;
+unsigned long lastTime1 = 0;
+float temperature, humidity, lightIntensity, dust;
 
 void setup_wifi() {
   Serial.println();
@@ -73,6 +74,24 @@ void callback(char *topic, byte *payload, unsigned int length) {
       digitalWrite(D2, LOW);
       client.publish("device/led/status", "LED OFF");
       Serial.println("LED OFF");
+    } else if ((char)payload[0] == 'o' && (char)payload[1] == 'f' && (char)payload[2] == 'f' && (char)payload[3] == 'd' && (char)payload[4] == 'e' && (char)payload[5] == 'n' ) {
+      digitalWrite(D0, LOW);
+      client.publish("device/led/status", "LED 2 OFF");
+      Serial.println("LED 2 OFF");
+    } else if ((char)payload[0] == 'o' && (char)payload[1] == 'n' && (char)payload[2] == 'd' && (char)payload[3] == 'e' && (char)payload[4] == 'n') {
+      digitalWrite(D0, HIGH);
+      client.publish("device/led/status", "LED 2 ON");
+      Serial.println("LED 2 ON");
+    } else if ((char)payload[0] == 'o' && (char)payload[1] == 'n' && (char)payload[2] == 'a' && (char)payload[3] == 'l' && (char)payload[4] == 'l') {
+      digitalWrite(D1, HIGH);
+      digitalWrite(D2, HIGH);
+      client.publish("device/led/status", "ALL DEVICE ON");
+      Serial.println("ALL DEVICE ON");
+    } else if ((char)payload[0] == 'o' && (char)payload[1] == 'f' && (char)payload[2] == 'f' && (char)payload[3] == 'a' && (char)payload[4] == 'l' && (char)payload[4] == 'l') {
+      digitalWrite(D1, LOW);
+      digitalWrite(D2, LOW);
+      client.publish("device/led/status", "ALL DEVICE OFF");
+      Serial.println("ALL DEVICE OFF");
     }
   }
 
@@ -93,6 +112,7 @@ void reconnect() {
   }
 }
 void setup() {
+  pinMode(D0, OUTPUT);
   pinMode(D1, OUTPUT);
   pinMode(D2, OUTPUT);
   
@@ -147,6 +167,9 @@ if (now - lastTime > 5000) {
   Serial.print((int)lightIntensity);
   Serial.println(F(" Lux"));
 
+  dust = random(0, 101); // Tạo giá trị ngẫu nhiên trong khoảng 0 đến 100
+    Serial.print(F("Dust: "));
+    Serial.println(dust);
 
     // Publish data to MQTT
    String data =String(temperature) + " " + String(humidity) + " " + String((int)lightIntensity);
@@ -155,5 +178,15 @@ if (now - lastTime > 5000) {
   client.publish(topic, dataChar);
 
     delay(100);
+
+//     if (dust > 60) {
+//       delay(2000);
+//   for (int i = 0; i < 10; i++) {  // Blink 5 times
+//     digitalWrite(D0, HIGH);
+//     delay(500);
+//     digitalWrite(D0, LOW);
+//     delay(500);
+//   }
+// }
   }
 }

@@ -1,4 +1,4 @@
-const dataSensor = require('../models/dataSensor');
+const dataSensor = require('../models/dataSensorDust');
 const Sequelize = require('sequelize');
 const mqtt = require('mqtt');
 const dayjs = require('dayjs');
@@ -28,6 +28,7 @@ class dataSensorController {
       const temperature = parseFloat(values[0]);
       const humidity = parseFloat(values[1]);
       const light = parseInt(values[2]);
+      const dust = parseInt(values[3]);
 
       // Ghi dữ liệu vào cơ sở dữ liệu
       const SensorData = await dataSensor();
@@ -35,6 +36,7 @@ class dataSensorController {
         temperature,
         humidity,
         light,
+        dust,
       });
 
       // console.log('Sensor data saved:', newSensorData);
@@ -49,14 +51,16 @@ class dataSensorController {
       const pageNumber = parseInt(page) || 1;
       const sizePerPage = parseInt(pageSize) || 10;
 
-      let attributes = ['id', 'temperature', 'humidity', 'light', 'createdAt'];
+      let attributes = ['id', 'temperature', 'humidity', 'light', 'dust', 'createdAt'];
 
       if (filterBy === 'temperature') {
-        attributes = attributes.filter(attr => attr !== 'humidity' && attr !== 'light');
+        attributes = attributes.filter(attr => attr !== 'humidity' && attr !== 'light' && attr !== 'dust');
       } else if (filterBy === 'humidity') {
-        attributes = attributes.filter(attr => attr !== 'temperature' && attr !== 'light');
+        attributes = attributes.filter(attr => attr !== 'temperature' && attr !== 'light' && attr !== 'dust');
       } else if (filterBy === 'light') {
-        attributes = attributes.filter(attr => attr !== 'temperature' && attr !== 'humidity');
+        attributes = attributes.filter(attr => attr !== 'temperature' && attr !== 'humidity' && attr !== 'dust');
+      } else if (filterBy === 'dust') {
+        attributes = attributes.filter(attr => attr !== 'temperature' && attr !== 'humidity' && attr !== 'light');
       }
 
       // Xác định tiêu chí sắp xếp
@@ -109,10 +113,12 @@ class dataSensorController {
             { temperature: { [Sequelize.Op.substring]: value } },
             { humidity: { [Sequelize.Op.substring]: value } },
             { light: { [Sequelize.Op.substring]: value } },
+            { dust: { [Sequelize.Op.substring]: value } }, // Thêm điều kiện tìm kiếm cho dust
             { createdAt: { [Sequelize.Op.substring]: value } },
           ],
         };
       }
+
       // console.log(whereCondition);
       const limit = pageSize ? parseInt(pageSize) : 10;
       const offset = page ? (parseInt(page) - 1) * limit : 0;

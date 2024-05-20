@@ -51,7 +51,7 @@ body {
   0%,
   50%,
   100% {
-    background-color: transparent; /* Hiển thị nền trong suốt */
+    background-color: #999; /* Hiển thị nền trong suốt */
   }
   25%,
   75% {
@@ -66,6 +66,9 @@ body {
 }
 .sunny {
   background: linear-gradient(to top right, #efebd8, #ebd995, #f7e396);
+}
+.dust {
+  background: linear-gradient(to top right, #d3d3d3, #b0b0b0, #808080);
 }
 .hide-background {
   background-color: transparent;

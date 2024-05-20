@@ -1,4 +1,4 @@
-/* Datahistorys.module.scss */
+/* DataSensors.module.scss */
 html {
   height: 100%;
 }
@@ -20,8 +20,10 @@ html {
 }
 
 .inner-form {
+  width: 100%;
   display: flex; /* Tạo bố trí nằm ngang */
   align-items: center; /* Căn giữa theo trục đứng */
+  justify-content: space-between;
 }
 
 /* Định nghĩa kiểu cho các trường chọn (select) */
@@ -74,7 +76,7 @@ html {
   width: 16px; /* Chiều rộng của icon */
   height: 16px; /* Chiều cao của icon */
 }
-.history-table-parent {
+.sensor-table-parent {
   width: 80%;
   margin: 10px auto;
   padding: 10px;
@@ -82,8 +84,8 @@ html {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   border-radius: 10px; /* Bo góc */
 }
-/* Styling for the history table */
-.history-table-div {
+/* Styling for the sensor table */
+.sensor-table-div {
   width: 100%;
   margin: 10px auto;
   background-color: #f4f8f9;
@@ -96,7 +98,7 @@ html {
   // border-collapse: collapse;
 }
 
-.history-table {
+.sensor-table {
   width: 100%;
   // border-collapse: collapse;
   // padding: 0 10px;
@@ -104,28 +106,28 @@ html {
 
 /* Styling for table headers (th) */
 .th-feild {
-  width: 20%;
+  width: 16.6%;
   color: #b1b9c0;
   padding: 12px;
   text-align: center;
 }
-.history-table tbody {
+.sensor-table tbody {
   width: 100%;
 }
 /* Styling for table cells (td) */
-.history-table td {
-  width: 20%;
+.sensor-table td {
+  width: 16.6%;
   padding: 16px;
   text-align: center;
   border-bottom: 1px solid #ddd;
   font-weight: 600;
   border-radius: 5px;
 }
-.history-table tbody tr:nth-child(odd) {
+.sensor-table tbody tr:nth-child(odd) {
   background-color: rgba(0, 0, 0, 0.03); /* Màu xám nhạt cho hàng lẻ */
 }
 /* Styling for table rows on hover */
-.history-table tbody tr:hover {
+.sensor-table tbody tr:hover {
   background-color: rgba(0, 0, 0, 0.06);
 }
 
@@ -148,4 +150,32 @@ html {
 }
 .icon-hover:hover {
   cursor: pointer;
+}
+
+.input-field input[type='date'] {
+  padding: 10px;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  outline: none;
+}
+
+.input-field input[type='date']::-webkit-calendar-picker-indicator {
+  background-color: transparent;
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  height: auto;
+  width: 20px;
+  margin: auto;
+}
+
+.input-field input[type='date']::-webkit-inner-spin-button {
+  display: none;
+}
+
+.input-field input[type='date']::-webkit-clear-button {
+  display: none;
 }

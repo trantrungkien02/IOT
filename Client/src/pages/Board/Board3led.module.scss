@@ -97,21 +97,21 @@ body {
   margin: 30px 0 30px 10px;
 }
 .fan {
-  height: 48%;
+  height: 33%;
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
+  // flex-direction: column;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
   border-radius: 20px; /* Bo góc */
   overflow: hidden;
 }
 .lamp {
-  height: 48%;
+  height: 33%;
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
+  // flex-direction: column;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
   border-radius: 20px; /* Bo góc */
   overflow: hidden;
@@ -122,16 +122,38 @@ body {
   height: 100px;
   object-fit: cover;
   color: #3e6c8e;
+  position: relative;
+  right: 100px;
 }
 .lightoff {
   width: 59px;
   height: 120px;
+  position: relative;
+  right: 80px;
   object-fit: contain;
   margin-top: 10px;
 }
 .lighton {
   width: 105px;
   height: 120px;
+  position: relative;
+  right: 80px;
+  object-fit: contain;
+  margin-bottom: 10px;
+}
+.lightoff1 {
+  width: 19, 6666px;
+  height: 40px;
+  position: relative;
+  right: 80px;
+  object-fit: contain;
+  margin-top: 10px;
+}
+.lighton1 {
+  width: 35px;
+  height: 40px;
+  position: relative;
+  right: 80px;
   object-fit: contain;
   margin-bottom: 10px;
 }
@@ -147,10 +169,12 @@ body {
 
 .switch {
   position: relative;
-  display: inline-block;
+  left: 10px;
+  // display: inline-block;
   width: 100px;
   height: 34px;
-  margin-top: 10px;
+  // margin-top: 10px;
+  // margin-left: 20px;
 }
 
 .switch input {

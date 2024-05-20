@@ -1,20 +1,29 @@
 /* DataSensors.module.scss */
-
+html {
+  height: 100%;
+}
 .base {
   padding-top: 10px;
 }
 
 /* Định nghĩa kiểu cho form */
 .s003 {
-  width: 80%; /* Form chiếm toàn bộ chiều rộng */
-  padding: 10px 10px 0 10px; /* Thêm khoảng cách */
-  background-color: #f5f5f5; /* Màu nền nhạt */
+  width: 100%; /* Form chiếm toàn bộ chiều rộng */
+  padding: 10px; /* Thêm khoảng cách */
+  background-color: #dee1e7; /* Màu nền nhạt */
   margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px; /* Bo góc */
 }
 
 .inner-form {
+  width: 100%;
   display: flex; /* Tạo bố trí nằm ngang */
   align-items: center; /* Căn giữa theo trục đứng */
+  justify-content: space-between;
 }
 
 /* Định nghĩa kiểu cho các trường chọn (select) */
@@ -24,26 +33,31 @@
 }
 
 .input-select select {
-  padding: 10px; /* Khoảng cách bên trong */
-  background-color: white; /* Nền trắng */
+  padding: 15px; /* Khoảng cách bên trong */
+  background-color: #ecf0f1; /* Nền trắng */
   font-size: 14px; /* Kích thước chữ */
   border: none;
+  border-radius: 5px;
 }
 
 /* Định nghĩa kiểu cho các trường input */
 .input-field {
   border: none;
+  padding-right: 10px;
 }
 
 .input-field input {
+  background-color: #ecf0f1; /* Nền trắng */
+  width: 500px;
   padding: 15px; /* Khoảng cách bên trong */
   font-size: 14px; /* Kích thước chữ */
   border: none;
+  border-radius: 5px;
 }
 
 /* Định nghĩa kiểu cho nút tìm kiếm */
 .btn-search {
-  background-color: #4caf50; /* Màu xanh lục */
+  background-color: #59a4bb; /* Màu xanh lục */
   border: none; /* Không viền */
   margin-left: 10px;
   border-radius: 5px; /* Bo tròn các góc */
@@ -54,7 +68,7 @@
 }
 
 .btn-search:hover {
-  background-color: #45a049; /* Màu khi di chuột qua */
+  background-color: #3a92ac; /* Màu khi di chuột qua */
 }
 
 /* Định nghĩa kiểu cho icon SVG */
@@ -62,10 +76,17 @@
   width: 16px; /* Chiều rộng của icon */
   height: 16px; /* Chiều cao của icon */
 }
-
+.sensor-table-parent {
+  width: 80%;
+  margin: 10px auto;
+  padding: 10px;
+  background-color: #f4f8f9;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px; /* Bo góc */
+}
 /* Styling for the sensor table */
 .sensor-table-div {
-  width: 80%;
+  width: 100%;
   margin: 10px auto;
   background-color: #f4f8f9;
   padding: 10px;
@@ -84,7 +105,7 @@
 }
 
 /* Styling for table headers (th) */
-th {
+.th-feild {
   width: 20%;
   color: #b1b9c0;
   padding: 12px;
@@ -96,7 +117,7 @@ th {
 /* Styling for table cells (td) */
 .sensor-table td {
   width: 20%;
-  padding: 17.8px;
+  padding: 16px;
   text-align: center;
   border-bottom: 1px solid #ddd;
   font-weight: 600;
@@ -115,11 +136,13 @@ th {
   color: #fff;
 }
 .page {
-  max-width: 80%;
+  max-width: 98%;
   margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  background-color: #fff;
+  border-radius: 5px;
   // position: fixed;
   // bottom: 20px;
   // left: 0;
@@ -127,4 +150,32 @@ th {
 }
 .icon-hover:hover {
   cursor: pointer;
+}
+
+.input-field input[type='date'] {
+  padding: 10px;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  outline: none;
+}
+
+.input-field input[type='date']::-webkit-calendar-picker-indicator {
+  background-color: transparent;
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  height: auto;
+  width: 20px;
+  margin: auto;
+}
+
+.input-field input[type='date']::-webkit-inner-spin-button {
+  display: none;
+}
+
+.input-field input[type='date']::-webkit-clear-button {
+  display: none;
 }

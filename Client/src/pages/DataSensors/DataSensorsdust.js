@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { Pagination, Select, MenuItem, TextField } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { DatePicker } from '@mui/x-date-pickers';
-import { Pagination, Select, MenuItem } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSort, faArrowUpWideShort, faArrowDownWideShort } from '@fortawesome/free-solid-svg-icons';
 import classNames from 'classnames/bind';
-import styles from './ActionHistory.module.scss';
+import styles from './DataSensorsdust.module.scss';
 import Navigation from '../../components/Navigation/Navigation';
 import convertDateTime from '../../components/convertDateTime/convertDateTime';
 const cx = classNames.bind(styles);
 
-function ActionHistory() {
+function DataSensors() {
   const [page, setPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [orderBy, setOrderBy] = useState('');
@@ -24,11 +24,22 @@ function ActionHistory() {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [resetDatePickers, setResetDatePickers] = useState(true);
+
+  // function formatDate(inputDateString) {
+  //   const originalDate = new Date(inputDateString);
+
+  //   const formattedDate = `${originalDate.getFullYear()}-${(originalDate.getMonth() + 1)
+  //     .toString()
+  //     .padStart(2, '0')}-${originalDate.getDate().toString().padStart(2, '0')}`;
+
+  //   return formattedDate;
+  // }
+  console.log(startDate, endDate);
   const navigate = useNavigate();
 
   const handleChangePage = (event, value) => {
     setPage(value);
-    setOrderBy('');
+    // setOrderBy('');
   };
 
   const handleChangeItemsPerPage = event => {
@@ -47,7 +58,6 @@ function ActionHistory() {
       setOrderBy(`${column}_ASC`);
     }
   };
-
   const handleStartDateChange = newDate => {
     setStartDate(newDate ? newDate : null); // Cập nhật giá trị startDate
     setSearchValue('');
@@ -60,6 +70,7 @@ function ActionHistory() {
     setSearchValue('');
     setSearchState(1);
   };
+
   const handleFieldChange = event => {
     const value = event.target.value;
     setFieldName(value);
@@ -67,7 +78,7 @@ function ActionHistory() {
   };
 
   const handleSearchChange = event => {
-    setSearchValue(event.target.value.toUpperCase());
+    setSearchValue(event.target.value);
     setStartDate(null);
     setEndDate(null);
     setResetDatePickers(false);
@@ -87,7 +98,7 @@ function ActionHistory() {
     setSearchState(prevState => prevState + 1);
   };
 
-  const [actionhistory, setActionHistory] = useState([]);
+  const [datasensor, setDataSenSor] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -95,9 +106,10 @@ function ActionHistory() {
         let queryParams;
         if (searchState > 1 && searchValue !== '') {
           const response = await axios.get(
-            `http://localhost:3001/actionhistory/search/${fieldName}?page=${page}&pageSize=${itemsPerPage}&field=${fieldName}&value=${searchValue}&orderBy=${orderBy}`,
+            `http://localhost:3001/datasensor/search/${fieldName}?page=${page}&pageSize=${itemsPerPage}&field=${fieldName}&value=${searchValue}&orderBy=${orderBy}`,
           );
-          setActionHistory(response.data);
+          setDataSenSor(response.data);
+          console.log(response.data);
           queryParams = new URLSearchParams({
             page,
             pageSize: itemsPerPage,
@@ -105,11 +117,12 @@ function ActionHistory() {
             field: fieldName,
             value: searchValue,
           }).toString();
+          console.log('getsearch');
         } else if (searchState > 1 && startDate !== null && endDate !== null) {
           const response = await axios.get(
-            `http://localhost:3001/actionhistory/searchcreatedat?page=${page}&pageSize=${itemsPerPage}&startDate=${startDate}&endDate=${endDate}&orderBy=${orderBy}`,
+            `http://localhost:3001/datasensor/searchcreatedat?page=${page}&pageSize=${itemsPerPage}&startDate=${startDate}&endDate=${endDate}&orderBy=${orderBy}`,
           );
-          setActionHistory(response.data);
+          setDataSenSor(response.data);
           setResetDatePickers(true);
           console.log(response.data, resetDatePickers);
           queryParams = new URLSearchParams({
@@ -121,17 +134,18 @@ function ActionHistory() {
           }).toString();
           console.log('getCreatedAt', startDate, endDate, resetDatePickers);
         } else {
-          const response = await axios.get(`http://localhost:3001/actionhistory?page=${page}&pageSize=${itemsPerPage}&orderBy=${orderBy}`);
-          setActionHistory(response.data);
+          const response = await axios.get(`http://localhost:3001/datasensor?page=${page}&pageSize=${itemsPerPage}&orderBy=${orderBy}`);
+          setDataSenSor(response.data);
           queryParams = new URLSearchParams({
             page,
             pageSize: itemsPerPage,
             orderBy,
           }).toString();
+          console.log('getall', startDate, endDate, resetDatePickers);
         }
 
         navigate({
-          pathname: '/actionhistory',
+          pathname: '/datasensor',
           search: `?${queryParams}`,
         });
       } catch (error) {
@@ -146,21 +160,58 @@ function ActionHistory() {
     if (searchValue === '') {
       setSearchState(prevState => prevState + 1);
       setOrderBy('');
+      setResetDatePickers(true);
+      console.log(resetDatePickers);
     }
   }, [searchValue]);
 
-  const getActionColor = action => {
-    if (action === 'ON') {
-      return '#52a0b8';
+  const getTemperatureColor = temperature => {
+    if (temperature < 15) {
+      return '#f76caf';
+    } else if (temperature >= 15 && temperature < 35) {
+      return '#e84575';
     } else {
-      return '#333';
+      return '#cc184e';
     }
   };
-  let totalPages = Math.ceil(actionhistory.totalCount / itemsPerPage);
+
+  const getHumidityColor = humidity => {
+    if (humidity < 70) {
+      return '#53d2db';
+    } else if (humidity >= 70 && humidity < 80) {
+      return '#4f8fbf';
+    } else {
+      return '#26648b';
+    }
+  };
+
+  const getLightColor = light => {
+    if (light < 40) {
+      return '#f7ba79';
+    } else if (light >= 40 && light < 80) {
+      return '#e55905';
+    } else {
+      return '#f4443f';
+    }
+  };
+  const getDustColor = dust => {
+    if (dust < 20) {
+      return '#808080';
+    } else if (dust >= 20 && dust < 40) {
+      return '#808080';
+    } else if (dust >= 40 && dust < 60) {
+      return '#505050'; // Màu xám
+    } else {
+      return '#303030';
+    }
+  };
+
+  let totalPages = Math.ceil(datasensor.totalCount / itemsPerPage);
   return (
     <div className={cx('base')}>
       <Navigation />
-      <div className={cx('history-table-parent')}>
+
+      <div className={cx('sensor-table-parent')}>
         <div className={cx('s003')}>
           <form>
             <div className={cx('inner-form')}>
@@ -169,8 +220,10 @@ function ActionHistory() {
                   <select onChange={handleFieldChange} value={fieldName}>
                     <option value="all">All</option>
                     <option value="id">ID</option>
-                    <option value="deviceName">DEVICE_NAME</option>
-                    <option value="action">ACTION</option>
+                    <option value="temperature">TEMPERATURE</option>
+                    <option value="humidity">HUMIDITY</option>
+                    <option value="light">LIGHT</option>
+                    <option value="dust">DUST</option>
                     <option value="createdAt">CREATED_AT</option>
                   </select>
                 </div>
@@ -181,11 +234,16 @@ function ActionHistory() {
               {showDatePickers ? (
                 <>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DatePicker label="START DATE" value={resetDatePickers ? startDate : null} onChange={handleStartDateChange} />
+                    <DatePicker
+                      label="START DATE"
+                      format={'YYYY-MM-DD'}
+                      value={resetDatePickers ? startDate : null}
+                      onChange={handleStartDateChange}
+                    />
                   </LocalizationProvider>
                   &nbsp;&nbsp;
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DatePicker label="END DATE" value={resetDatePickers ? endDate : null} onChange={handleEndDateChange} />
+                    <DatePicker label="END DATE" format={'YYYY-MM-DD'} value={resetDatePickers ? endDate : null} onChange={handleEndDateChange} />
                   </LocalizationProvider>
                 </>
               ) : null}
@@ -215,8 +273,8 @@ function ActionHistory() {
             </div>
           </form>
         </div>
-        <div className={cx('history-table-div')}>
-          <table className={cx('history-table')}>
+        <div className={cx('sensor-table-div')}>
+          <table className={cx('sensor-table')}>
             <thead>
               <tr>
                 <th
@@ -240,16 +298,17 @@ function ActionHistory() {
                     color: '#333',
                     borderRadius: '5px',
                   }}
-                  onClick={() => handleSort('deviceName')}
+                  onClick={() => handleSort('temperature')}
                 >
-                  DEVICES&nbsp;
-                  {orderBy === 'deviceName_ASC' ? (
+                  TEMPERATURE&nbsp;
+                  {orderBy === 'temperature_ASC' ? (
                     <FontAwesomeIcon icon={faArrowUpWideShort} className={cx('icon-hover')} />
-                  ) : orderBy === 'deviceName_DESC' ? (
+                  ) : orderBy === 'temperature_DESC' ? (
                     <FontAwesomeIcon icon={faArrowDownWideShort} className={cx('icon-hover')} />
                   ) : (
                     <FontAwesomeIcon icon={faSort} className={cx('icon-hover')} />
                   )}
+                  {/* <img src={temperatureicon} alt="" style={{ width: '30px', height: '30px', objectFit: 'contain' }} /> */}
                 </th>
                 <th
                   className={cx('th-feild')}
@@ -258,16 +317,17 @@ function ActionHistory() {
                     color: '#333',
                     borderRadius: '5px',
                   }}
-                  onClick={() => handleSort('action')}
+                  onClick={() => handleSort('humidity')}
                 >
-                  ACTION&nbsp;
-                  {orderBy === 'action_ASC' ? (
+                  HUMIDITY&nbsp;
+                  {orderBy === 'humidity_ASC' ? (
                     <FontAwesomeIcon icon={faArrowUpWideShort} className={cx('icon-hover')} />
-                  ) : orderBy === 'action_DESC' ? (
+                  ) : orderBy === 'humidity_DESC' ? (
                     <FontAwesomeIcon icon={faArrowDownWideShort} className={cx('icon-hover')} />
                   ) : (
                     <FontAwesomeIcon icon={faSort} className={cx('icon-hover')} />
                   )}
+                  {/* <img src={humidityicon} alt="" style={{ width: '20px', height: '20px', objectFit: 'contain' }} /> */}
                 </th>
                 <th
                   className={cx('th-feild')}
@@ -276,6 +336,40 @@ function ActionHistory() {
                     color: '#333',
                     borderRadius: '5px',
                   }}
+                  onClick={() => handleSort('light')}
+                >
+                  LIGHT&nbsp;
+                  {orderBy === 'light_ASC' ? (
+                    <FontAwesomeIcon icon={faArrowUpWideShort} className={cx('icon-hover')} />
+                  ) : orderBy === 'light_DESC' ? (
+                    <FontAwesomeIcon icon={faArrowDownWideShort} className={cx('icon-hover')} />
+                  ) : (
+                    <FontAwesomeIcon icon={faSort} className={cx('icon-hover')} />
+                  )}
+                  {/* <img src={sunicon} alt="" style={{ width: '20px', height: '20px', objectFit: 'contain' }} /> */}
+                </th>
+                <th
+                  className={cx('th-feild')}
+                  style={{
+                    background: 'linear-gradient(to top right, #d3d3d3, #b0b0b0, #808080)',
+                    color: '#333',
+                    borderRadius: '5px',
+                  }}
+                  onClick={() => handleSort('dust')}
+                >
+                  DUST&nbsp;
+                  {orderBy === 'dust_ASC' ? (
+                    <FontAwesomeIcon icon={faArrowUpWideShort} className={cx('icon-hover')} />
+                  ) : orderBy === 'dust_DESC' ? (
+                    <FontAwesomeIcon icon={faArrowDownWideShort} className={cx('icon-hover')} />
+                  ) : (
+                    <FontAwesomeIcon icon={faSort} className={cx('icon-hover')} />
+                  )}
+                  {/* <img src={sunicon} alt="" style={{ width: '20px', height: '20px', objectFit: 'contain' }} /> */}
+                </th>
+                <th
+                  className={cx('th-feild')}
+                  style={{ backgroundColor: '#c9d4d7', color: '#333', borderRadius: '5px' }}
                   onClick={() => handleSort('createdAt')}
                 >
                   TIME&nbsp;
@@ -291,31 +385,39 @@ function ActionHistory() {
             </thead>
           </table>
         </div>
-        <div className={cx('history-table-div')} style={{ height: '64vh', overflowY: 'auto' }}>
-          <table className={cx('history-table')}>
+        <div className={cx('sensor-table-div')} style={{ height: '64vh', overflowY: 'auto' }}>
+          <table className={cx('sensor-table')}>
             <tbody>
-              {actionhistory && actionhistory.data && actionhistory.data.length > 0 ? (
-                actionhistory.data.map(item => (
+              {datasensor && datasensor.data && datasensor.data.length > 0 ? (
+                datasensor.data.map(item => (
                   <tr key={item.id}>
                     <td>{item.id}</td>
-                    <td>{item.deviceName}</td>
-                    <td style={{ color: getActionColor(item.action) }}>{item.action}</td>
+                    <td style={{ color: getTemperatureColor(item.temperature) }}>{item.temperature} °C</td>
+                    <td style={{ color: getHumidityColor(item.humidity) }}>{item.humidity} %</td>
+                    <td style={{ color: getLightColor(item.light) }}>{item.light} Lux</td>
+                    <td style={{ color: getDustColor(item.dust) }}>{item.dust} Mg/m3</td>
                     <td>{convertDateTime(item.createdAt)}</td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="4">{actionhistory}</td>
+                  <td colSpan="5">{datasensor}</td>
                 </tr>
               )}
             </tbody>
           </table>
         </div>
-
         <div className={cx('page')}>
-          <div>Total Pages: {isNaN(parseInt(totalPages)) ? 0 : parseInt(totalPages)}</div>
+          <div className={cx('total-page')}>Total Pages: {isNaN(parseInt(totalPages)) ? 0 : parseInt(totalPages)}</div>
 
-          <Pagination count={totalPages} page={page} onChange={handleChangePage} showFirstButton showLastButton />
+          <Pagination
+            count={totalPages} // Tổng số trang
+            page={page} // Trang hiện tại
+            onChange={handleChangePage} // Xử lý sự kiện khi trang thay đổi
+            showFirstButton
+            showLastButton
+            className={cx('page-list')}
+          />
           <div className={cx('select-horizontal')}>
             <Select label="Items per page" value={itemsPerPage} onChange={handleChangeItemsPerPage}>
               <MenuItem value={5}>5</MenuItem>
@@ -329,4 +431,4 @@ function ActionHistory() {
   );
 }
 
-export default ActionHistory;
+export default DataSensors;

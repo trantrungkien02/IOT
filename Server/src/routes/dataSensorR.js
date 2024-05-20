@@ -7,7 +7,7 @@ const dataSensorController = require('../controllers/dataSensorController');
 
 router.get('/datasensor', dataSensorController.getAll);
 router.get('/datasensor/search/:field', dataSensorController.getByField);
-// router.post('/datasensor/create', dataSensorController.create);
+router.get('/datasensor/searchcreatedat', dataSensorController.getByCreatedAtRange);
 router.put('/datasensor/update/:id', dataSensorController.update);
 router.delete('/datasensor/delete/:id', dataSensorController.delete);
 

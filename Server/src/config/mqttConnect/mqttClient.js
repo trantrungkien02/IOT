@@ -1,6 +1,6 @@
 const mqtt = require('mqtt');
 
-const mqttServer = 'mqtt://192.168.0.102';
+const mqttServer = 'mqtt://192.168.0.100';
 const mqttOptions = {
   port: 1993,
   username: 'kienok',

@@ -33,6 +33,12 @@ class dashBoardController {
           case 'light_DESC':
             order = [['light', 'DESC']];
             break;
+          // case 'dust_ASC':
+          //   order = [['dust', 'ASC']];
+          //   break;
+          // case 'dust_DESC':
+          //   order = [['dust', 'DESC']];
+          //   break;
           default:
             break;
         }

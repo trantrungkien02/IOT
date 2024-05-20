@@ -23,6 +23,7 @@
   "homepage": "https://github.com/trantrungkien02/IOT#readme",
   "dependencies": {
     "cors": "^2.8.5",
+    "dayjs": "^1.11.11",
     "express": "^4.18.2",
     "express-handlebars": "^7.1.2",
     "luxon": "^3.4.4",

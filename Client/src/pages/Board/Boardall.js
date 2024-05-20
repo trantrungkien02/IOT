@@ -3,16 +3,13 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 // import mqtt from 'mqtt';
 import classNames from 'classnames/bind';
-import styles from './Board.module.scss';
+import styles from './Board3led.module.scss';
 import images from '../../components/ImageList/ImageList';
 import Navigation from '../../components/Navigation/Navigation';
 import RealTimeLineChart from '../../components/Rechart/Rechart';
 
 const cx = classNames.bind(styles);
 
-function getRandomValue(min, max) {
-  return Math.floor(Math.random() * (max - min + 1) + min);
-}
 // const mqttServer = 'mqtt://192.168.50.13'; // Địa chỉ của MQTT broker
 // const mqttOptions = {
 //   port: 1993,
@@ -38,29 +35,6 @@ function getRandomValue(min, max) {
 //   console.log('Disconnected from MQTT broker');
 // });
 function Board() {
-  useEffect(() => {
-    // Hàm để tạo dữ liệu ngẫu nhiên
-    const generateRandomData = () => {
-      return Array.from({ length: 5 }, (_, index) => ({
-        name: `Item ${index + 1}`,
-        temperature: getRandomValue(0, 45),
-        humidity: getRandomValue(60, 90),
-        light: getRandomValue(0, 110),
-      }));
-    };
-
-    // Cập nhật dữ liệu ban đầu
-    setData1(generateRandomData());
-
-    // Thiết lập interval để cập nhật dữ liệu mỗi giây
-    const intervalId = setInterval(() => {
-      setData1(generateRandomData());
-    }, 3000);
-
-    // Cleanup interval khi component bị unmounted
-    return () => clearInterval(intervalId);
-  }, []);
-
   const [temperature, setTemperature] = useState(0);
   const [humidity, setHumidity] = useState(0);
   const [light, setLight] = useState(0);
@@ -68,20 +42,23 @@ function Board() {
   const [isChecked, setIsChecked] = useState(null);
   const [isChecked1, setIsChecked1] = useState(null);
   const [isLightOn, setIsLightOn] = useState(null);
-  const [client, setClient] = useState(null);
-  const [data1, setData1] = useState([]);
-  // const [hideBackground, setHideBackground] = useState(false);
+  const [isChecked2, setIsChecked2] = useState(null);
+  const [isLedOn, setIsLedOn] = useState(null);
 
   useEffect(() => {
     const savedIsSpinning = localStorage.getItem('isSpinning') === 'true';
     const savedIsChecked = localStorage.getItem('isChecked') === 'true';
     const savedIsChecked1 = localStorage.getItem('isChecked1') === 'true';
     const savedIsLightOn = localStorage.getItem('isLightOn') === 'true';
+    const savedIsChecked2 = localStorage.getItem('isChecked2') === 'true';
+    const savedIsLedOn = localStorage.getItem('isLedOn') === 'true';
 
     setIsSpinning(savedIsSpinning);
     setIsChecked(savedIsChecked);
     setIsChecked1(savedIsChecked1);
     setIsLightOn(savedIsLightOn);
+    setIsChecked2(savedIsChecked2);
+    setIsLedOn(savedIsLedOn);
   }, []);
 
   // Save states to localStorage whenever they change
@@ -90,7 +67,9 @@ function Board() {
     if (isChecked !== null) localStorage.setItem('isChecked', isChecked);
     if (isChecked1 !== null) localStorage.setItem('isChecked1', isChecked1);
     if (isLightOn !== null) localStorage.setItem('isLightOn', isLightOn);
-  }, [isSpinning, isChecked, isChecked1, isLightOn]);
+    if (isChecked2 !== null) localStorage.setItem('isChecked2', isChecked2);
+    if (isLedOn !== null) localStorage.setItem('isLedOn', isLedOn);
+  }, [isSpinning, isChecked, isChecked1, isLightOn, isChecked2, isLedOn]);
 
   const handleCheckboxFan = () => {
     // Nếu đèn đang tắt (isLightOn là false), thực hiện cuộc gọi API trước khi bật đèn
@@ -113,6 +92,8 @@ function Board() {
           setTimeout(() => {
             setIsSpinning(false);
             setIsChecked(false);
+            setIsLedOn(false);
+            setIsChecked2(false);
           }, 500);
         }
       } catch (error) {
@@ -143,6 +124,56 @@ function Board() {
           setTimeout(() => {
             setIsLightOn(false);
             setIsChecked1(false);
+            setIsLedOn(false);
+            setIsChecked2(false);
+          }, 500);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData(); // Gọi hàm fetch để thực hiện yêu cầu POST
+  };
+  useEffect(() => {
+    if (isChecked && isChecked1) {
+      setIsChecked2(true);
+    }
+  }, [isChecked, isChecked1]);
+  const handleCheckboxLed = () => {
+    // Nếu đèn đang tắt (isLightOn là false), thực hiện cuộc gọi API trước khi bật đèn
+    const action = isLedOn ? 'offall' : 'onall'; // Nếu đèn đang sáng thì tắt, nếu đèn đang tắt thì bật
+
+    const fetchData = async () => {
+      try {
+        const payload =
+          action === 'onall' || action === 'offall'
+            ? [
+                { deviceName: 'FAN', action: action === 'onall' ? 'onfan' : 'offfan' },
+                { deviceName: 'LED', action: action === 'onall' ? 'onled' : 'offled' },
+              ]
+            : [{ deviceName: 'LED', action }];
+
+        const response = await axios.post('http://localhost:3001/actionhistory/create', payload);
+
+        if (response.data.mqttMessage === 'FAN ON' || response.data.mqttMessage === 'LED ON') {
+          // Đợi 1 giây rồi mới thay đổi trạng thái của đèn
+          setTimeout(() => {
+            setIsSpinning(true);
+            setIsChecked(true);
+            setIsLightOn(true);
+            setIsChecked1(true);
+            setIsLedOn(true);
+            setIsChecked2(true);
+          }, 500);
+        } else if (response.data.mqttMessage === 'FAN OFF' || response.data.mqttMessage === 'LED OFF') {
+          setTimeout(() => {
+            setIsSpinning(false);
+            setIsChecked(false);
+            setIsLightOn(false);
+            setIsChecked1(false);
+            setIsLedOn(false);
+            setIsChecked2(false);
           }, 500);
         }
       } catch (error) {
@@ -257,7 +288,7 @@ function Board() {
               ) : (
                 <>
                   <img src={images.fan} alt="" className={isSpinning ? cx('spin') : ''} onClick={handleCheckboxFan} />
-                  <label className={cx('switch')} style={{ marginTop: '35px' }}>
+                  <label className={cx('switch')}>
                     <span className={cx('off-label', { 'bold-text': !isSpinning })}>OFF</span>
                     <input type="checkbox" checked={isChecked} onChange={handleCheckboxFan} />
                     <span className={cx('slider', 'round')}></span>
@@ -276,11 +307,37 @@ function Board() {
                   ) : (
                     <img className={cx('lightoff')} src={images.lightoff} alt="Light Off" />
                   )}
-                  <label className={cx('switch')}>
+                  <label className={cx('switch')} style={{ marginLeft: '56px' }}>
                     <span className={cx('off-label', { 'bold-text': !isLightOn })}>NIGHT</span>
                     <input type="checkbox" checked={isChecked1} onChange={handleCheckboxLight} />
                     <span className={cx('slider1', 'round')}></span>
                     <span className={cx('on-label', { 'bold-text': isLightOn })}>DAY</span>
+                  </label>
+                </>
+              )}
+            </div>
+            <div className={cx('lamp', 'sunny')}>
+              {isLedOn === null ? (
+                <div>Loading...</div>
+              ) : (
+                <>
+                  <img
+                    src={images.fan}
+                    alt=""
+                    className={isSpinning ? cx('spin') : ''}
+                    style={{ height: '40px', width: '40px', right: '90px', position: 'relative', top: '5px' }}
+                    onClick={handleCheckboxFan}
+                  />
+                  {isLightOn ? (
+                    <img className={cx('lighton1')} src={images.lighton} alt="Light On" />
+                  ) : (
+                    <img className={cx('lightoff1')} src={images.lightoff} alt="Light Off" />
+                  )}
+                  <label className={cx('switch')} style={{ marginLeft: '56px' }}>
+                    <span className={cx('off-label', { 'bold-text': !isLedOn })}>OFF</span>
+                    <input type="checkbox" checked={isChecked2} onChange={handleCheckboxLed} />
+                    <span className={cx('slider1', 'round')}></span>
+                    <span className={cx('on-label', { 'bold-text': isLedOn })}>ON</span>
                   </label>
                 </>
               )}

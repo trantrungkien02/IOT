@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 // import mqtt from 'mqtt';
 import classNames from 'classnames/bind';
-import styles from './Board.module.scss';
+import styles from './Boarddust.module.scss';
 import images from '../../components/ImageList/ImageList';
 import Navigation from '../../components/Navigation/Navigation';
 import RealTimeLineChart from '../../components/Rechart/Rechart';
@@ -64,12 +64,14 @@ function Board() {
   const [temperature, setTemperature] = useState(0);
   const [humidity, setHumidity] = useState(0);
   const [light, setLight] = useState(0);
+  const [dust, setDust] = useState(0);
   const [isSpinning, setIsSpinning] = useState(null);
   const [isChecked, setIsChecked] = useState(null);
   const [isChecked1, setIsChecked1] = useState(null);
   const [isLightOn, setIsLightOn] = useState(null);
   const [client, setClient] = useState(null);
   const [data1, setData1] = useState([]);
+  const [dustBackgroundClass, setDustBackgroundClass] = useState('');
   // const [hideBackground, setHideBackground] = useState(false);
 
   useEffect(() => {
@@ -162,7 +164,8 @@ function Board() {
         setTemperature(response.data[0].temperature);
         setHumidity(response.data[0].humidity);
         setLight(response.data[0].light);
-        // console.log(response.data[0].id);
+        setDust(response.data[0].dust);
+        setDustBackgroundClass(response.data[0].dust > 60 ? 'temperature-alarm' : '');
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -178,10 +181,11 @@ function Board() {
     // Cleanup interval khi component unmount
     return () => clearInterval(intervalId);
   }, []);
-
+  console.log(dustBackgroundClass, temperature, humidity, light);
   const [temperatureColor, setTemperatureColor] = useState('');
   const [humidityColor, setHumidityColor] = useState('');
   const [lightColor, setLightColor] = useState('');
+  const [dustColor, setDustColor] = useState('');
 
   useEffect(() => {
     const checkTemperatureAlarm = () => {
@@ -213,37 +217,55 @@ function Board() {
         setLightColor('linear-gradient(to top right, #ffcc00, #ff6600)');
       }
     };
+    const checkDustColor = () => {
+      if (dust < 40) {
+        setDustColor('linear-gradient(to top right, #d3d3d3, #b0b0b0, #808080)');
+      } else if (dust >= 40 && dust <= 80) {
+        setDustColor('linear-gradient(to top right, #b0b0b0, #808080, #505050)');
+      } else {
+        setDustColor('linear-gradient(to top right, #808080, #505050, #303030)');
+      }
+    };
+
     console.log('rerender');
     checkTemperatureAlarm();
     checkHumidityColor();
     checkLightColor();
-  }, [temperature, humidity, light]);
+    checkDustColor();
+  }, [temperature, humidity, light, dust]);
 
   return (
     <div className={cx('bro')}>
       <Navigation />
       <div className={cx('board')}>
         <div className={cx('parameter')}>
-          <div className={cx('temperature', 'parameter-child')} style={{ background: temperatureColor }}>
+          <div className={cx('parameter-child')} style={{ background: temperatureColor }}>
             <div className={cx('tem-content')}>
               <p className={cx('text-content')}>TEMPERATURE</p>
               <img src={images.temperatureicon} alt="" />
             </div>
             <p className={cx('text-content')}>{temperature} °C</p>
           </div>
-          <div className={cx('humidity', 'parameter-child')} style={{ background: humidityColor }}>
+          <div className={cx('parameter-child')} style={{ background: humidityColor }}>
             <div className={cx('hum-content')}>
               <p className={cx('text-content')}>HUMIDITY</p>
               <img src={images.humidityicon} alt="" />
             </div>
             <p className={cx('text-content')}>{humidity} %</p>
           </div>
-          <div className={cx('sunny', 'parameter-child')} style={{ background: lightColor }}>
+          <div className={cx('parameter-child')} style={{ background: lightColor }}>
             <div className={cx('li-content')}>
               <p className={cx('text-content')}>LIGHT</p>
               <img src={images.sunicon} alt="" />
             </div>
             <p className={cx('text-content')}>{light} Lux</p>
+          </div>
+          <div className={cx('parameter-child', dustBackgroundClass)} style={{ background: dust <= 60 ? dustColor : '' }}>
+            <div className={cx('li-content')}>
+              <p className={cx('text-content')}>DUST</p>
+              <img src={images.dust} alt="" />
+            </div>
+            <p className={cx('text-content')}>{dust} MG/M3</p>
           </div>
         </div>
         <div className={cx('display')}>
